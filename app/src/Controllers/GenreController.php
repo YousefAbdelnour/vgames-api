@@ -26,9 +26,9 @@ class GenreController extends BaseController
         $params = $request->getQueryParams();
 
         if (isset($params["page"]) && isset($params["page_size"])) {
-            if (!ValidationHelper::areValidPaginationParams($params)) {
-                throw new HttpInvalidPaginationParamsException($request);
-            }
+            //if (!ValidationHelper::areValidPaginationParams($params)) {
+            //throw new HttpInvalidPaginationParamsException($request);
+            //}
             $this->genreModel->setPaginationOptions(
                 $params["page"],
                 $params["page_size"]

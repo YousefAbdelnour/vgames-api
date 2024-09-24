@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Controllers;
 
+use App\Exceptions\HttpInvalidPaginationParamsException;
+use App\Validation\ValidationHelper;
 use Psr\Http\Message\ResponseInterface as Response;
 
 abstract class BaseController
@@ -18,5 +20,27 @@ abstract class BaseController
         $response->getBody()->write($payload);
 
         return $response->withStatus($status_code)->withAddedHeader(HEADERS_CONTENT_TYPE, APP_MEDIA_TYPE_JSON);
+    }
+
+    protected function validatePaginationParams($params, $request): bool
+    {
+        // validating pagination params
+        if (isset($params["page"])) {
+            // checks if parameters are positive digits
+            if (!ValidationHelper::isValidPageNumber($params)) {
+                throw new HttpInvalidPaginationParamsException($request);
+            }
+            //if pagination is requested and is good
+            return true;
+        }
+        if (isset($params["page_size"])) {
+            // checks if parameters are positive digits
+            if (!ValidationHelper::isValidPageSize($params)) {
+                throw new HttpInvalidPaginationParamsException($request);
+            }
+            //if pagination is requested and is good
+            return true;
+        }
+        return false;
     }
 }
