@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Models;
 
 use App\Core\PDOService;
+use App\Helpers\PaginationHelper;
 use PDO;
 use Exception;
 
@@ -84,6 +85,32 @@ abstract class BaseModel
     protected function fetchAll($sql, $args = [], $fetchMode = PDO::FETCH_ASSOC): array
     {
         return (array) $this->run($sql, $args)->fetchAll($fetchMode);
+    }
+
+    protected function paginate($sql, $args = [], $fetchMode = PDO::FETCH_ASSOC): array
+    {
+        // 1) Count: determine how many rows will returned by the select
+        $count = $this->count($sql, $args);
+
+        // 2) Instantiate PaginationHelper and pass to it current page
+        // page size and the count produced in 1)
+        $pagination_helper = new PaginationHelper(
+            $this->current_page,
+            $this->records_per_page,
+            $count
+        );
+
+        // 3) Get the offset from the pagination helper instance
+        $offset = $pagination_helper->getOffset();
+
+        // 4) Append the limit keyword and offset to the $sql statement
+        $sql .= " LIMIT {$this->records_per_page} OFFSET {$offset}";
+
+        // 5) get the pagination metadata and combine them with the paged data
+        $results['meta'] = $pagination_helper->getPaginationInfo();
+        $results['data'] = $this->fetchAll($sql, $args);
+
+        return $results;
     }
 
     /**

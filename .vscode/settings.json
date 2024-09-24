@@ -1,11 +1,12 @@
 {
   // PHP-related settings
   // Font settings
+  "editor.fontFamily": "Fira Code",
   "editor.fontLigatures": true,
-  "editor.fontFamily": "'Fira Code' , Consolas, Menlo, Monaco, 'Courier New', monospace",
-  "editor.fontWeight": "normal",
-  "editor.fontSize": 24,
-  "editor.lineHeight": 32,
+  "editor.fontWeight": "light",
+  "editor.fontSize": 16,
+  "editor.lineHeight": 0,
+  // "window.zoomLevel": 1,
   // Enable format on save
   "editor.formatOnSave": true,
   // Enable word wrap
@@ -17,7 +18,7 @@
   "workbench.statusBar.visible": true,
 
   // Customize the appearance
-  "editor.guides.bracketPairs": true,
+  "editor.guides.bracketPairs": false,
   "editor.bracketPairColorization.independentColorPoolPerBracketType": true,
   "workbench.iconTheme": "material-icon-theme",
   "editor.cursorBlinking": "smooth",
@@ -25,8 +26,8 @@
   "editor.mouseWheelScrollSensitivity": 3,
   "files.autoSave": "afterDelay",
   "files.autoSaveDelay": 1000,
-  "editor.minimap.enabled": false,
-  "editor.cursorSmoothCaretAnimation": "on",
+  "editor.minimap.enabled": true,
+  // "editor.cursorSmoothCaretAnimation": "on",
   "explorer.compactFolders": false,
   "breadcrumbs.showFunctions": true,
 
@@ -119,6 +120,5 @@
   //   Warning - Report Spelling Issues as Warnings
   //   Information - Report Spelling Issues as Information (default)
   //   Hint - Report Spelling Issues as Hints, will not show up in Problems
-  "cSpell.diagnosticLevel": "Information",
-  "intelliphp.inlineSuggestionsEnabled": false
+  "cSpell.diagnosticLevel": "Information"
 }
