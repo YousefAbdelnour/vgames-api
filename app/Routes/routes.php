@@ -3,7 +3,11 @@
 declare(strict_types=1);
 
 use App\Controllers\AboutController;
+
+//* Imports for controllers
 use App\Controllers\GameController;
+use App\Controllers\GenreController;
+
 use App\Controllers\ReviewController;
 use App\Controllers\UpdateController;
 use App\Helpers\DateTimeHelper;
@@ -30,7 +34,13 @@ return static function (Slim\App $app): void {
     $app->get('/updates/{update_id}', [UpdateController::class, 'handleGetUpdatesById']);
 
     //* ROUTE: GET/games/{game_id}
-    $app->get('/games/{game_id}', [GameController::class, 'handleGetGames']);
+    $app->get('/games/{game_id}', [GameController::class, 'handleGetGameById']);
+
+    //* ROUTE: GET/genres
+    $app->get('/genres', [GenreController::class, 'handleGetGenres']);
+
+    //* ROUTE: GET/genres/{genre_name}
+    $app->get('/genres/{genre_name}', [GenreController::class, 'handleGetGenreByName']);
 
     //* ROUTE: GET/reviews
     $app->get('/reviews', [ReviewController::class, 'handleGetReviews']);
