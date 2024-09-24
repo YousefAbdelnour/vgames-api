@@ -82,4 +82,9 @@ class ValidationHelper
         $keys = array_keys($input);
         return array_keys($keys) !== $keys;
     }
+
+    public static function areValidPaginationParams($params): bool
+    {
+        return ctype_digit($params["page"]) && ctype_digit($params["page_size"]);
+    }
 }
