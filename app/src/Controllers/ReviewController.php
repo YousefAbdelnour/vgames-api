@@ -21,16 +21,11 @@ class ReviewController extends BaseController
     {
         $params = $request->getQueryParams();
 
-        // validating pagination params
-        if (isset($params["page"]) && isset($params["page_size"])) {
+        // pagination
+        $this->validatePaginationParams($params, $request);
+        $this->review_model->setPaginationOptions($params["page"], $params["page_size"]);
 
-            // checks if parameters are positive digits
-            if (!ValidationHelper::areValidPaginationParams($params)) {
-                throw new HttpInvalidPaginationParamsException($request);
-            }
-            $this->review_model->setPaginationOptions($params["page"], $params["page_size"]);
-        }
-
+        // response
         return $this->renderJson($response, [
             "data" => $this->review_model->getReviews($params),
         ], StatusCodeInterface::STATUS_OK);
