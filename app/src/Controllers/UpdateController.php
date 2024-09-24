@@ -8,6 +8,8 @@ use App\Exceptions\HttpInvalidPaginationParamsException;
 use App\Validation\ValidationHelper;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
+use Slim\Exception\HttpBadRequestException;
+use Slim\Exception\HttpNotFoundException;
 
 class UpdateController extends BaseController
 {
@@ -29,5 +31,22 @@ class UpdateController extends BaseController
         return $this->renderJson($response, [
             "data" => $this->update_model->getUpdates($params),
         ], StatusCodeInterface::STATUS_OK);
+    }
+
+    public function handleGetUpdatesById(Request $request, Response $response, array $args): Response
+    {
+        if (isset($args['update_id'])) {
+            if (is_numeric($args['update_id']) && (int) $args['update_id'] > 0) {
+                $result = $this->update_model->getUpdatesById($args['update_id']);
+                if ($result == false) {
+                    throw new HttpNotFoundException($request, "Could not find Update with id [{$args['update_id']}]");
+                } else {
+                    return $this->renderJson($response, [
+                        "data" => $result
+                    ], StatusCodeInterface::STATUS_OK);
+                }
+            }
+        }
+        throw new HttpBadRequestException($request, "Invalid Update id.");
     }
 }
