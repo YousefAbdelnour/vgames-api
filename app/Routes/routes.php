@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use App\Controllers\AboutController;
 use App\Controllers\GameController;
+use App\Controllers\ReviewController;
 use App\Helpers\DateTimeHelper;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
@@ -23,6 +24,9 @@ return static function (Slim\App $app): void {
 
     //* ROUTE: GET/games/{game_id}
     $app->get('/games/{game_id}', [GameController::class, 'handleGetGames']);
+
+    //* ROUTE: GET/reviews
+    $app->get('/reviews', [ReviewController::class, 'handleGetReviews']);
 
     //* ROUTE: GET /ping
     $app->get('/ping', function (Request $request, Response $response, $args) {
