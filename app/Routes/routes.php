@@ -3,7 +3,11 @@
 declare(strict_types=1);
 
 use App\Controllers\AboutController;
+
+//* Imports for controllers
 use App\Controllers\GameController;
+use App\Controllers\GenreController;
+
 use App\Helpers\DateTimeHelper;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
@@ -22,7 +26,13 @@ return static function (Slim\App $app): void {
     $app->get('/games', [GameController::class, 'handleGetGames']);
 
     //* ROUTE: GET/games/{game_id}
-    $app->get('/games/{game_id}', [GameController::class, 'handleGetGames']);
+    $app->get('/games/{game_id}', [GameController::class, 'handleGetGameById']);
+
+    //* ROUTE: GET/genres
+    $app->get('/genres', [GenreController::class, 'handleGetGenres']);
+
+    //* ROUTE: GET/genres/{genre_name}
+    $app->get('/genres/{genre_name}', [GenreController::class, 'handleGetGenreByName']);
 
     //* ROUTE: GET /ping
     $app->get('/ping', function (Request $request, Response $response, $args) {
