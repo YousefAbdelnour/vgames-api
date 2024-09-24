@@ -30,6 +30,9 @@ return static function (Slim\App $app): void {
     //* ROUTE: GET/updates
     $app->get('/updates', [UpdateController::class, 'handleGetUpdates']);
 
+    //* ROUTE: GET/updates/{update_id}
+    $app->get('/updates/{update_id}', [UpdateController::class, 'handleGetUpdatesById']);
+
     //* ROUTE: GET/games/{game_id}
     $app->get('/games/{game_id}', [GameController::class, 'handleGetGameById']);
 
