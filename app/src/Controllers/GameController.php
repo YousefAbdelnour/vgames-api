@@ -49,7 +49,6 @@ class GameController extends BaseController
         }
 
         return $this->renderJson($response, [
-            STATUS_SUCCESS,
             "data" => $game,
         ], StatusCodeInterface::STATUS_OK);
     }
