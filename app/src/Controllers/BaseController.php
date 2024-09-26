@@ -4,9 +4,12 @@ declare(strict_types=1);
 
 namespace App\Controllers;
 
+use App\Exceptions\HttpInvalidIdException;
 use App\Exceptions\HttpInvalidPaginationParamsException;
 use App\Validation\ValidationHelper;
 use Psr\Http\Message\ResponseInterface as Response;
+use Slim\Exception\HttpBadRequestException;
+use Slim\Exception\HttpNotFoundException;
 
 abstract class BaseController
 {
@@ -42,5 +45,48 @@ abstract class BaseController
             return true;
         }
         return false;
+    }
+
+    protected function getValidatedPaginationParams($params, $request)
+    {
+        $paginationParams = [];
+
+        foreach ($params as $key => $value) {
+            if ($key === "page" || $key === "page_size") {
+                if (ValidationHelper::isValidPaginationParameter($params, $key, $request)) {
+                    $paginationParams[$key] = (int) $value;
+                }
+            }
+        }
+
+        return $paginationParams;
+    }
+
+    protected function checkIdSet($params, string $field_name, $request, string $err_msg = "A valid ID must be provided.")
+    {
+        if (!isset($params[$field_name])) {
+            throw new HttpBadRequestException($request, $err_msg);
+        }
+    }
+
+    protected function validateIdNum($id, $request, string $collection)
+    {
+        if (!ctype_digit($id)) {
+            throw new HttpInvalidIdException($request, "ID for {$collection} must be a number.");
+        }
+    }
+
+    protected function validateIdStr($id, $request, string $collection)
+    {
+        if (!ctype_alpha($id)) {
+            throw new HttpInvalidIdException($request, "ID for {$collection} must be composed of letters only.");
+        }
+    }
+
+    protected function validateObj($obj, $request, string $err_msg)
+    {
+        if ($obj === false) {
+            throw new HttpNotFoundException($request, $err_msg);
+        }
     }
 }

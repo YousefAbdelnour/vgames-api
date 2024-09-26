@@ -21,13 +21,14 @@ class ReviewController extends BaseController
     {
         $params = $request->getQueryParams();
 
-        // pagination
-        $this->validatePaginationParams($params, $request);
-        $this->review_model->setPaginationOptions($params["page"], $params["page_size"]);
+        $this->review_model->setPaginationOptions($this->getValidatedPaginationParams($params, $request));
+
+        // reviews
+        $reviews = $this->review_model->getReviews($params);
 
         // response
         return $this->renderJson($response, [
-            "data" => $this->review_model->getReviews($params),
-        ], StatusCodeInterface::STATUS_OK);
+            "data" => $reviews,
+        ]);
     }
 }

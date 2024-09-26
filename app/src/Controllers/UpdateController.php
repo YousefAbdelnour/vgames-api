@@ -33,11 +33,11 @@ class UpdateController extends BaseController
         ], StatusCodeInterface::STATUS_OK);
     }
 
-    public function handleGetUpdatesById(Request $request, Response $response, array $args): Response
+    public function handleGetUpdateById(Request $request, Response $response, array $args): Response
     {
         if (isset($args['update_id'])) {
             if (is_numeric($args['update_id']) && (int) $args['update_id'] > 0) {
-                $result = $this->update_model->getUpdatesById($args['update_id']);
+                $result = $this->update_model->getUpdateById($args['update_id']);
                 if ($result == false) {
                     throw new HttpNotFoundException($request, "Could not find Update with id [{$args['update_id']}]");
                 } else {
