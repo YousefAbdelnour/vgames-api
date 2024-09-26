@@ -18,16 +18,14 @@ return static function (Slim\App $app): void {
     //* ROUTE: GET /
     $app->get('/', [AboutController::class, 'handleAboutWebService']);
 
-    // $app->get('/test', [TestController::class, 'handleTest']);
-
     //* ROUTE: GET/games
     $app->get('/games', [GameController::class, 'handleGetGames']);
 
+    //* ROUTE: GET/games/{game_id}
+    $app->get('/games/{game_id}', [GameController::class, 'handleGetGameById']);
+
     //* ROUTE: GET/updates
     $app->get('/updates', [UpdateController::class, 'handleGetUpdates']);
-
-    //* ROUTE: GET/games/{game_id}
-    $app->get('/games/{game_id}', [GameController::class, 'handleGetGames']);
 
     //* ROUTE: GET/reviews
     $app->get('/reviews', [ReviewController::class, 'handleGetReviews']);
