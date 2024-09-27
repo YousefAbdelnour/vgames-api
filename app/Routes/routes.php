@@ -5,6 +5,7 @@ declare(strict_types=1);
 use App\Controllers\AboutController;
 
 //* Imports for controllers
+use App\Controllers\CountryController;
 use App\Controllers\GameController;
 use App\Controllers\GenreController;
 
@@ -22,7 +23,8 @@ return static function (Slim\App $app): void {
     //* ROUTE: GET /
     $app->get('/', [AboutController::class, 'handleAboutWebService']);
 
-    // $app->get('/test', [TestController::class, 'handleTest']);
+    //* ROUTE: GET/countries
+    $app->get('/countries', [CountryController::class, 'handleGetCountries']);
 
     //* ROUTE: GET/games
     $app->get('/games', [GameController::class, 'handleGetGames']);
