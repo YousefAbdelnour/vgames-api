@@ -7,6 +7,7 @@ use App\Controllers\AboutController;
 //* Imports for controllers
 use App\Controllers\GameController;
 use App\Controllers\GenreController;
+use App\Controllers\DeveloperController;
 
 use App\Controllers\ReviewController;
 use App\Controllers\UpdateController;
@@ -41,6 +42,12 @@ return static function (Slim\App $app): void {
 
     //* ROUTE: GET/genres/{genre_name}
     $app->get('/genres/{genre_name}', [GenreController::class, 'handleGetGenreByName']);
+
+    //* ROUTE: GET/developers
+    $app->get('/developers', [DeveloperController::class, 'handleGetDevelopers']);
+
+    //* ROUTE: GET/developers/{developer_id}
+    $app->get('/developers/{developer_id}', [DeveloperController::class, 'handleGetDeveloperById']);
 
     //* ROUTE: GET/reviews
     $app->get('/reviews', [ReviewController::class, 'handleGetReviews']);
