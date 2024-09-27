@@ -32,4 +32,21 @@ class CountryController extends BaseController
             "data" => $this->country_Model->getCountries($params),
         ], StatusCodeInterface::STATUS_OK);
     }
+
+    public function handleGetCountryByName(Request $request, Response $response, array $args): Response
+    {
+        if (isset($args['country_Name'])) {
+            if (is_string($args['country_Name'])) {
+                $result = $this->country_Model->getCountryByName($args['country_Name']);
+                if ($result == false) {
+                    throw new HttpNotFoundException($request, "Could not find Update with id [{$args['country_Name']}]");
+                } else {
+                    return $this->renderJson($response, [
+                        "data" => $result
+                    ], StatusCodeInterface::STATUS_OK);
+                }
+            }
+        }
+        throw new HttpBadRequestException($request, "Invalid Country id.");
+    }
 }
