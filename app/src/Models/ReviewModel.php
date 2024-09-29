@@ -21,4 +21,10 @@ class ReviewModel extends BaseModel
 
         return (array) $this->paginate($sql, $query_args);
     }
+
+    public function getReviewById($review_id): mixed
+    {
+        $sql = "SELECT * FROM {$this->table_name} where review_id = :review_id";
+        return $this->fetchSingle($sql, ["review_id" => $review_id]);
+    }
 }
