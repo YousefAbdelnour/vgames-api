@@ -31,4 +31,24 @@ class ReviewController extends BaseController
             "data" => $reviews,
         ]);
     }
+
+    public function handleGetReviewById(Request $request, Response $response, array $args): Response
+    {
+        // check if ID is set
+        $this->checkIdSet($args, 'review_id', $request);
+
+        $review_id = $args['review_id'];
+
+        // validate ID, in this case it must be a positive number (function checks if the ID is composed of digits only)
+        $this->validateIdNum($review_id, $request, "reviews");
+
+        $review = $this->review_model->getReviewById($review_id);
+
+        // check if the $game obj returned by sql is present
+        $this->validateObj($review, $request, "Could not find review with id [{$review_id}]");
+
+        return $this->renderJson($response, [
+            "data" => $review,
+        ]);
+    }
 }

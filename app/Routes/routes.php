@@ -45,6 +45,9 @@ return static function (Slim\App $app): void {
     //* ROUTE: GET/reviews
     $app->get('/reviews', [ReviewController::class, 'handleGetReviews']);
 
+    //* ROUTE: GET/reviews/{review_id}
+    $app->get('/reviews/{review_id}', [ReviewController::class, 'handleGetReviewById']);
+
     //* ROUTE: GET /ping
     $app->get('/ping', function (Request $request, Response $response, $args) {
 
