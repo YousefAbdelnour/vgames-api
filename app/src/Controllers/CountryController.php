@@ -23,30 +23,28 @@ class CountryController extends BaseController
         $params = $request->getQueryParams();
 
         // pagination. if it is requested then set, otherwise keep going
-        if ($this->validatePaginationParams($params, $request)) {
-            $this->country_Model->setPaginationOptions($params["page"], $params["page_size"]);
-        }
+        $this->country_Model->setPaginationOptions($this->getValidatedPaginationParams($params, $request));
 
         // response
         return $this->renderJson($response, [
             "data" => $this->country_Model->getCountries($params),
-        ], StatusCodeInterface::STATUS_OK);
+        ]);
     }
 
     public function handleGetCountryByName(Request $request, Response $response, array $args): Response
     {
-        if (isset($args['country_Name'])) {
-            if (is_string($args['country_Name'])) {
-                $result = $this->country_Model->getCountryByName($args['country_Name']);
-                if ($result == false) {
-                    throw new HttpNotFoundException($request, "Could not find Update with id [{$args['country_Name']}]");
-                } else {
-                    return $this->renderJson($response, [
-                        "data" => $result
-                    ], StatusCodeInterface::STATUS_OK);
-                }
-            }
-        }
-        throw new HttpBadRequestException($request, "Invalid Country id.");
+        $this->checkIdSet($args, 'game_id', $request);
+
+        $country_Name = $args['country_name'];
+
+        $this->validateIdStr($country_Name, $request, "Countries");
+
+        $country = $this->country_Model->getCountryByName($country_Name);
+
+        $this->validateObj($country, $request, "Could not find country [{$country_Name}]");
+
+        return $this->renderJson($response, [
+            "data" => $country
+        ]);
     }
 }
