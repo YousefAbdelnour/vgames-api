@@ -18,6 +18,8 @@ class GameModel extends BaseModel
     {
         $query_args = [];
 
+        //TODO: filtering, sorting
+
         $sql = "SELECT * FROM {$this->table_name} WHERE 1 ";
 
         return (array) $this->paginate($sql, $query_args);
@@ -27,5 +29,15 @@ class GameModel extends BaseModel
     {
         $sql = "SELECT * FROM {$this->table_name} where game_id = :game_id";
         return $this->fetchSingle($sql, ["game_id" => $game_id]);
+    }
+
+    public function getReviewsByGameId($game_id): array
+    {
+        $query_args = [];
+
+        //TODO: same fileting logic for get /reviews
+
+        $sql = "SELECT * FROM review WHERE game_id = :game_id";
+        return (array) $this->paginate($sql, ["game_id" => $game_id]);
     }
 }
