@@ -41,6 +41,9 @@ return static function (Slim\App $app): void {
     //* ROUTE: GET/games/{game_id}
     $app->get('/games/{game_id}', [GameController::class, 'handleGetGameById']);
 
+    //* ROUTE: GET/games/{game_id}/platforms
+    $app->get('/games/{game_id}/platforms', [GameController::class, 'handleGetPlatformsByGameId']);
+
     //* ROUTE: GET/genres
     $app->get('/genres', [GenreController::class, 'handleGetGenres']);
 

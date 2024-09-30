@@ -28,4 +28,15 @@ class GameModel extends BaseModel
         $sql = "SELECT * FROM {$this->table_name} where game_id = :game_id";
         return $this->fetchSingle($sql, ["game_id" => $game_id]);
     }
+
+    public function getPlatformsByGameId($game_id): array
+    {
+        $sql = <<<SQL
+        SELECT * FROM platform p, platform_game pg
+                WHERE pg.game_id = :game_id
+                    AND pg.platform_name = p.platform_name
+        SQL;
+
+        return (array) $this->paginate($sql, ["game_id" => $game_id]);
+    }
 }
