@@ -18,14 +18,28 @@ class UpdateModel extends BaseModel
         $query_args = [];
 
         $sql = "SELECT * FROM {$this->table_name} WHERE 1 ";
+        $result = $this->paginate($sql, $query_args);
 
-        return (array) $this->paginate($sql, $query_args);
+        //parsing Features
+        $result['data'] = $this->parseNewFeatures($result['data']);
+        return $result;
     }
 
     public function getUpdateById($update_id)
     {
         $query_args = [];
         $sql = "SELECT * FROM {$this->table_name} WHERE update_id = :update_id";
-        return $this->fetchSingle($sql, ["update_id" => $update_id]);
+        $result = $this->fetchSingle($sql, ["update_id" => $update_id]);
+
+        //* Parsing the New Features Column
+        $result['New_Features'] = explode(',',$result["New_Features"]);
+        return $result;
+    }
+
+    private function parseNewFeatures($data){
+        foreach ($data as &$row){
+            $row['New_Features'] = explode(',',$row["New_Features"]);
+        }
+        return $data;
     }
 }
