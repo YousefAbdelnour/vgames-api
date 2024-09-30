@@ -22,7 +22,7 @@ class UpdateModel extends BaseModel
         return (array) $this->paginate($sql, $query_args);
     }
 
-    public function getUpdatesById($update_id)
+    public function getUpdateById($update_id)
     {
         $query_args = [];
         $sql = "SELECT * FROM {$this->table_name} WHERE update_id = :update_id";
