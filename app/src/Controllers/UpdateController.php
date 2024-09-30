@@ -23,10 +23,7 @@ class UpdateController extends BaseController
         $params = $request->getQueryParams();
 
         // pagination. if it is requested then set, otherwise keep going
-        if ($this->validatePaginationParams($params, $request)) {
-            $this->update_model->setPaginationOptions($params["page"], $params["page_size"]);
-        }
-
+        $this->update_model->setPaginationOptions($this->getValidatedPaginationParams($params, $request));
         // response
         return $this->renderJson($response, [
             "data" => $this->update_model->getUpdates($params),
@@ -35,18 +32,17 @@ class UpdateController extends BaseController
 
     public function handleGetUpdateById(Request $request, Response $response, array $args): Response
     {
-        if (isset($args['update_id'])) {
-            if (is_numeric($args['update_id']) && (int) $args['update_id'] > 0) {
-                $result = $this->update_model->getUpdateById($args['update_id']);
-                if ($result == false) {
-                    throw new HttpNotFoundException($request, "Could not find Update with id [{$args['update_id']}]");
-                } else {
-                    return $this->renderJson($response, [
-                        "data" => $result
-                    ], StatusCodeInterface::STATUS_OK);
-                }
-            }
-        }
-        throw new HttpBadRequestException($request, "Invalid Update id.");
+        $this->checkIdSet($args, 'update_id', $request);
+        $update_id = $args['update_id'];
+
+        $this->validateIdNum($update_id, $request, "Updates");
+
+        $update = $this->update_model->getUpdateById($update_id);
+
+        $this->validateObj($update, $request, "Could not find update with id [{$update_id}]");
+
+        return $this->renderJson($response, [
+            "data" => $update
+        ]);
     }
 }
