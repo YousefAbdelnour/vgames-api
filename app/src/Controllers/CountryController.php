@@ -33,9 +33,9 @@ class CountryController extends BaseController
 
     public function handleGetCountryByName(Request $request, Response $response, array $args): Response
     {
-        $this->checkIdSet($args, 'game_id', $request);
+        $this->checkIdSet($args, 'country_Name', $request);
 
-        $country_Name = $args['country_name'];
+        $country_Name = $args['country_Name'];
 
         $this->validateIdStr($country_Name, $request, "Countries");
 
@@ -47,4 +47,31 @@ class CountryController extends BaseController
             "data" => $country
         ]);
     }
+
+    public function handleGetGamesByCountryName(Request $request, Response $response, array $args): Response
+    {
+        $params = $request->getQueryParams();
+
+        $this->country_Model->setPaginationOptions($this->getValidatedPaginationParams($params, $request));
+
+        $this->checkIdSet($args, 'country_Name', $request);
+
+        $country_Name = $args['country_Name'];
+
+        $this->validateIdStr($country_Name, $request, "Countries");
+
+        $country = $this->country_Model->getCountryByName($country_Name);
+
+        $this->validateObj($country, $request, "Could not find country [{$country_Name}]");
+
+        $games = $this->country_Model->getGamesByCountryName($country_Name);
+
+        $this->validateObj($games, $request, "Could not find games from the country [{$country_Name}]");
+
+        return $this->renderJson($response, [
+            "data" => $games
+        ]);
+    }
+
+    // public function handleGetGamesByReviewsId(Request $request, Response $response, array $args): Response {}
 }
