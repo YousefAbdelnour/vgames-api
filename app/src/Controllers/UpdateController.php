@@ -26,7 +26,7 @@ class UpdateController extends BaseController
         $this->update_model->setPaginationOptions($this->getValidatedPaginationParams($params, $request));
         // response
         return $this->renderJson($response, [
-            "data" => $this->update_model->getUpdates($params),
+            "updates" => $this->update_model->getUpdates($params),
         ], StatusCodeInterface::STATUS_OK);
     }
 
@@ -42,7 +42,7 @@ class UpdateController extends BaseController
         $this->validateObj($update, $request, "Could not find update with id [{$update_id}]");
 
         return $this->renderJson($response, [
-            "data" => $update
+            "update" => $update
         ]);
     }
 }

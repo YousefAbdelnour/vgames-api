@@ -19,12 +19,19 @@ class CountryModel extends BaseModel
 
         $sql = "SELECT * FROM {$this->table_name} WHERE 1 ";
 
-        return (array) $this->paginate($sql, $query_args);
+        $result = $this->paginate($sql, $query_args);
+        $result['data'] = $this->parseDevelopment_Companies($result['data']);
+        return $result;
     }
     public function getCountryByName($country_Name)
     {
         $sql = "SELECT * FROM {$this->table_name} WHERE Country_Name = :Country_Name";
-        return $this->fetchSingle($sql, ["Country_Name" => $country_Name]);
+        $result = $this->fetchSingle($sql, ["Country_Name" => $country_Name]);
+
+        //* Parsing the Development_Companies field
+        $result['Development_Companies'] = explode(',', $result['Development_Companies']);
+        return $result;
+        // return $this->fetchSingle($sql, ["Country_Name" => $country_Name]);
     }
 
     public function getGamesByCountryName($country_Name): array
@@ -58,11 +65,18 @@ class CountryModel extends BaseModel
         $genres = $this->fetchAll($genre_sql, ["Country_Name" => $country_Name]);
 
         return array(
-            "Meta" => $games["meta"],
-            "Country Info" => $country,
-            "Games Info" => $games["data"],
-            "Developer Info" => $devs,
-            "Genre Info" => $genres
+            "country" => $country,
+            "games" => $games,
+            "developer" => $devs,
+            "genre" => $genres
         );
+    }
+
+    private function parseDevelopment_Companies($data)
+    {
+        foreach ($data as &$row) {
+            $row['Development_Companies'] = explode(',', $row["Development_Companies"]);
+        }
+        return $data;
     }
 }

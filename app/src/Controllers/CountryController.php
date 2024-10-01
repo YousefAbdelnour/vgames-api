@@ -3,13 +3,8 @@
 namespace App\Controllers;
 
 use App\Models\CountryModel;
-use Fig\Http\Message\StatusCodeInterface;
-use App\Exceptions\HttpInvalidPaginationParamsException;
-use App\Validation\ValidationHelper;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
-use Slim\Exception\HttpBadRequestException;
-use Slim\Exception\HttpNotFoundException;
 
 class CountryController extends BaseController
 {
@@ -27,7 +22,7 @@ class CountryController extends BaseController
 
         // response
         return $this->renderJson($response, [
-            "data" => $this->country_Model->getCountries($params),
+            "country" => $this->country_Model->getCountries($params),
         ]);
     }
 
@@ -44,7 +39,7 @@ class CountryController extends BaseController
         $this->validateObj($country, $request, "Could not find country [{$country_Name}]");
 
         return $this->renderJson($response, [
-            "data" => $country
+            "country" => $country
         ]);
     }
 
@@ -69,9 +64,7 @@ class CountryController extends BaseController
         $this->validateObj($games, $request, "Could not find games from the country [{$country_Name}]");
 
         return $this->renderJson($response, [
-            "data" => $games
+            "country" => $games
         ]);
     }
-
-    // public function handleGetGamesByReviewsId(Request $request, Response $response, array $args): Response {}
 }
