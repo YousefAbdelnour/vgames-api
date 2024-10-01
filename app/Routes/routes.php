@@ -29,6 +29,9 @@ return static function (Slim\App $app): void {
     //* ROUTE: GET/countries/{country_id}
     $app->get('/countries/{country_Name}', [CountryController::class, 'handleGetCountryByName']);
 
+    //* ROUTE: GET/countries/{country_id}/games
+    $app->get('/countries/{country_Name}/games', [CountryController::class, 'handleGetGamesByCountryName']);
+
     //* ROUTE: GET/games
     $app->get('/games', [GameController::class, 'handleGetGames']);
 
