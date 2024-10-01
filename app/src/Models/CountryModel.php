@@ -18,6 +18,7 @@ class CountryModel extends BaseModel
         $query_args = [];
 
         $sql = "SELECT * FROM {$this->table_name} WHERE 1 ";
+        $this->filterAndSort($params, $sql, $query_args);
 
         $result = $this->paginate($sql, $query_args);
         $result['data'] = $this->parseDevelopment_Companies($result['data']);
@@ -78,5 +79,43 @@ class CountryModel extends BaseModel
             $row['Development_Companies'] = explode(',', $row["Development_Companies"]);
         }
         return $data;
+    }
+
+    public static function filterAndSort(array $params, String &$sql, array &$query_args)
+    {
+        if (isset($params['language'])) {
+            $sql .= ' AND Language LIKE CONCAT(:language, "%")';
+            $query_args['language'] = $params['language'];
+        }
+        if (isset($params['min_internet_speed']) && isset($params['max_internet_speed'])) {
+            $sql .= ' AND Average_Internet_Speed BETWEEN :min_internet_speed AND :max_internet_speed ';
+            $query_args['min_internet_speed'] = $params['min_internet_speed'];
+            $query_args['max_internet_speed'] = $params['max_internet_speed'];
+        } else if (isset($params['min_internet_speed'])) {
+            $sql .= ' AND Average_Internet_Speed >= :min_internet_speed';
+            $query_args['min_internet_speed'] = $params['min_internet_speed'];
+        } else if (isset($params['max_internet_speed'])) {
+            $sql .= ' AND Average_Internet_Speed <= :max_internet_speed';
+            $query_args['max_internet_speed'] = $params['max_internet_speed'];
+        }
+        if (isset($params['min_age']) && isset($params['max_age'])) {
+            $sql .= ' AND Average_Age BETWEEN :min_age AND :max_age ';
+            $query_args['min_age'] = $params['min_age'];
+            $query_args['max_age'] = $params['max_age'];
+        } else if (isset($params['min_age'])) {
+            $sql .= ' AND Average_Age >= :min_age';
+            $query_args['min_age'] = $params['min_age'];
+        } else if (isset($params['max_age'])) {
+            $sql .= ' AND Average_Age <= :max_age';
+            $query_args['max_age'] = $params['max_age'];
+        }
+        if (isset($params['most_popular_genre'])) {
+            $sql .= ' AND Most_Popular_Genre LIKE :most_popular_genre';
+            $query_args['most_popular_genre'] = '%' . $params['most_popular_genre'] . '%';
+        }
+        if (isset($params['development_companies'])) {
+            $sql .= ' AND Development_Companies LIKE :development_companies';
+            $query_args['development_companies'] = '%' . $params['development_companies'] . '%';
+        }
     }
 }
