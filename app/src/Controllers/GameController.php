@@ -26,7 +26,7 @@ class GameController extends BaseController
 
         // response
         return $this->renderJson($response, [
-            "data" => $games,
+            "games" => $games,
         ]);
     }
 
@@ -46,7 +46,7 @@ class GameController extends BaseController
         $this->validateObj($game, $request, "Could not find game with id [{$game_id}]");
 
         return $this->renderJson($response, [
-            "data" => $game,
+            "game" => $game,
         ]);
     }
 
@@ -72,10 +72,16 @@ class GameController extends BaseController
         $this->game_model->setPaginationOptions($this->getValidatedPaginationParams($params, $request));
 
         // get reviews for the game with given ID
-        $reviews = $this->game_model->getReviewsByGameId($game_id);
+        $payload = $this->game_model->getReviewsByGameId($game);
 
         return $this->renderJson($response, [
-            "game" => ["game" => $game, "reviews" => $reviews],
+            "game" => [
+                "game" => $game,
+                "developer" => $payload["developer"],
+                "genre" => $payload["genre"],
+                "country" => $payload["country"],
+                "reviews" => $payload["reviews"]
+            ],
         ]);
     }
 }
