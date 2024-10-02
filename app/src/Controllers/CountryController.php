@@ -3,13 +3,8 @@
 namespace App\Controllers;
 
 use App\Models\CountryModel;
-use Fig\Http\Message\StatusCodeInterface;
-use App\Exceptions\HttpInvalidPaginationParamsException;
-use App\Validation\ValidationHelper;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
-use Slim\Exception\HttpBadRequestException;
-use Slim\Exception\HttpNotFoundException;
 
 class CountryController extends BaseController
 {
@@ -27,15 +22,15 @@ class CountryController extends BaseController
 
         // response
         return $this->renderJson($response, [
-            "data" => $this->country_Model->getCountries($params),
+            "country" => $this->country_Model->getCountries($params),
         ]);
     }
 
     public function handleGetCountryByName(Request $request, Response $response, array $args): Response
     {
-        $this->checkIdSet($args, 'game_id', $request);
+        $this->checkIdSet($args, 'country_Name', $request);
 
-        $country_Name = $args['country_name'];
+        $country_Name = $args['country_Name'];
 
         $this->validateIdStr($country_Name, $request, "Countries");
 
@@ -44,7 +39,32 @@ class CountryController extends BaseController
         $this->validateObj($country, $request, "Could not find country [{$country_Name}]");
 
         return $this->renderJson($response, [
-            "data" => $country
+            "country" => $country
+        ]);
+    }
+
+    public function handleGetGamesByCountryName(Request $request, Response $response, array $args): Response
+    {
+        $params = $request->getQueryParams();
+
+        $this->country_Model->setPaginationOptions($this->getValidatedPaginationParams($params, $request));
+
+        $this->checkIdSet($args, 'country_Name', $request);
+
+        $country_Name = $args['country_Name'];
+
+        $this->validateIdStr($country_Name, $request, "Countries");
+
+        $country = $this->country_Model->getCountryByName($country_Name);
+
+        $this->validateObj($country, $request, "Could not find country [{$country_Name}]");
+
+        $games = $this->country_Model->getGamesByCountryName($country_Name);
+
+        $this->validateObj($games, $request, "Could not find games from the country [{$country_Name}]");
+
+        return $this->renderJson($response, [
+            "country" => $games
         ]);
     }
 }

@@ -71,10 +71,16 @@ class GameController extends BaseController
         // returns an empty array if no pagination parameters were set
         $this->game_model->setPaginationOptions($this->getValidatedPaginationParams($params, $request));
 
-        $platforms = $this->game_model->getPlatformsByGameId($game_id);
+        $payload = $this->game_model->getPlatformsByGameId($game);
 
         return $this->renderJson($response, [
-            "game" => ["game" => $game, "platforms" => $platforms],
+            "game" => [
+                "game" => $game,
+                "developer" => $payload["developer"],
+                "genre" => $payload["genre"],
+                "country" => $payload["country"],
+                "platforms" => $payload["platforms"]
+            ],
         ]);
     }
 }
