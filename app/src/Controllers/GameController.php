@@ -2,14 +2,9 @@
 
 namespace App\Controllers;
 
-use App\Exceptions\HttpInvalidPaginationParamsException;
 use App\Models\GameModel;
-use App\Validation\ValidationHelper;
-use Fig\Http\Message\StatusCodeInterface;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
-use Slim\Exception\HttpBadRequestException;
-use Slim\Exception\HttpNotFoundException;
 
 class GameController extends BaseController
 {
@@ -23,33 +18,35 @@ class GameController extends BaseController
     {
         $params = $request->getQueryParams();
 
-        // pagination
-        $this->validatePaginationParams($params, $request);
-        $this->game_model->setPaginationOptions($params["page"], $params["page_size"]);
+        // returns an empty array if no pagination parameters were set
+        $this->game_model->setPaginationOptions($this->getValidatedPaginationParams($params, $request));
+
+        // games
+        $games = $this->game_model->getGames($params);
 
         // response
         return $this->renderJson($response, [
-            "data" => $this->game_model->getGames($params),
-        ], StatusCodeInterface::STATUS_OK);
+            "data" => $games,
+        ]);
     }
 
     public function handleGetGameById(Request $request, Response $response, array $args): Response
     {
-
-        if (!isset($args['game_id'])) {
-            throw new HttpBadRequestException($request, "Invalid game id.");
-        }
+        // check if ID is set
+        $this->checkIdSet($args, 'game_id', $request);
 
         $game_id = $args['game_id'];
 
+        // validate ID, in this case it must be a positive number (function checks if the ID is composed of digits only)
+        $this->validateIdNum($game_id, $request, "games");
+
         $game = $this->game_model->getGameById($game_id);
 
-        if ($game === false) {
-            throw new HttpNotFoundException($request, "Could not find game with id [{$game_id}]");
-        }
+        // check if the $game obj returned by sql is present
+        $this->validateObj($game, $request, "Could not find game with id [{$game_id}]");
 
         return $this->renderJson($response, [
             "data" => $game,
-        ], StatusCodeInterface::STATUS_OK);
+        ]);
     }
 }

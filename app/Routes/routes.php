@@ -5,6 +5,7 @@ declare(strict_types=1);
 use App\Controllers\AboutController;
 
 //* Imports for controllers
+use App\Controllers\CountryController;
 use App\Controllers\GameController;
 use App\Controllers\GenreController;
 use App\Controllers\DeveloperController;
@@ -23,7 +24,14 @@ return static function (Slim\App $app): void {
     //* ROUTE: GET /
     $app->get('/', [AboutController::class, 'handleAboutWebService']);
 
-    // $app->get('/test', [TestController::class, 'handleTest']);
+    //* ROUTE: GET/countries
+    $app->get('/countries', [CountryController::class, 'handleGetCountries']);
+
+    //* ROUTE: GET/countries/{country_id}
+    $app->get('/countries/{country_Name}', [CountryController::class, 'handleGetCountryByName']);
+
+    //* ROUTE: GET/countries/{country_id}/games
+    $app->get('/countries/{country_Name}/games', [CountryController::class, 'handleGetGamesByCountryName']);
 
     //* ROUTE: GET/games
     $app->get('/games', [GameController::class, 'handleGetGames']);
@@ -32,7 +40,7 @@ return static function (Slim\App $app): void {
     $app->get('/updates', [UpdateController::class, 'handleGetUpdates']);
 
     //* ROUTE: GET/updates/{update_id}
-    $app->get('/updates/{update_id}', [UpdateController::class, 'handleGetUpdatesById']);
+    $app->get('/updates/{update_id}', [UpdateController::class, 'handleGetUpdateById']);
 
     //* ROUTE: GET/games/{game_id}
     $app->get('/games/{game_id}', [GameController::class, 'handleGetGameById']);
@@ -51,6 +59,9 @@ return static function (Slim\App $app): void {
 
     //* ROUTE: GET/reviews
     $app->get('/reviews', [ReviewController::class, 'handleGetReviews']);
+
+    //* ROUTE: GET/reviews/{review_id}
+    $app->get('/reviews/{review_id}', [ReviewController::class, 'handleGetReviewById']);
 
     //* ROUTE: GET /ping
     $app->get('/ping', function (Request $request, Response $response, $args) {

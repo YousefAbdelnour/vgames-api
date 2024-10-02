@@ -21,13 +21,34 @@ class ReviewController extends BaseController
     {
         $params = $request->getQueryParams();
 
-        // pagination
-        $this->validatePaginationParams($params, $request);
-        $this->review_model->setPaginationOptions($params["page"], $params["page_size"]);
+        $this->review_model->setPaginationOptions($this->getValidatedPaginationParams($params, $request));
+
+        // reviews
+        $reviews = $this->review_model->getReviews($params);
 
         // response
         return $this->renderJson($response, [
-            "data" => $this->review_model->getReviews($params),
-        ], StatusCodeInterface::STATUS_OK);
+            "data" => $reviews,
+        ]);
+    }
+
+    public function handleGetReviewById(Request $request, Response $response, array $args): Response
+    {
+        // check if ID is set
+        $this->checkIdSet($args, 'review_id', $request);
+
+        $review_id = $args['review_id'];
+
+        // validate ID, in this case it must be a positive number (function checks if the ID is composed of digits only)
+        $this->validateIdNum($review_id, $request, "reviews");
+
+        $review = $this->review_model->getReviewById($review_id);
+
+        // check if the $game obj returned by sql is present
+        $this->validateObj($review, $request, "Could not find review with id [{$review_id}]");
+
+        return $this->renderJson($response, [
+            "data" => $review,
+        ]);
     }
 }

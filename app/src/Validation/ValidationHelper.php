@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Validation;
 
+use App\Exceptions\HttpInvalidPaginationParamsException;
+
 /**
  * A helper class that exposes various data validation functions.
  * @author frostybee
@@ -90,5 +92,13 @@ class ValidationHelper
     public static function isValidPageSize($params): bool
     {
         return ctype_digit($params["page_size"]);
+    }
+
+    public static function isValidPaginationParameter($params, $field_name, $request)
+    {
+        if (isset($params[$field_name]) && ctype_digit($params[$field_name])) {
+            return true;
+        }
+        throw new HttpInvalidPaginationParamsException($request);
     }
 }
