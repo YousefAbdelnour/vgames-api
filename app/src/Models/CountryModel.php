@@ -123,6 +123,8 @@ class CountryModel extends BaseModel
             $sql .= ' ORDER BY Average_Age ' . strtoupper($params['order']);
         } else if (isset($params['sort_by'])) {
             $sql .= ' ORDER BY Average_Age ASC ';
+        } else if (isset($params['order'])) {
+            $sql .= ' ORDER BY Country_Name ' . strtoupper($params['order']);
         }
         //* sorting by PK by default
         else {

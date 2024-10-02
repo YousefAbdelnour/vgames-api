@@ -84,5 +84,16 @@ class UpdateModel extends BaseModel
             $sql .= ' AND Version_Number LIKE CONCAT(:version_number, "%")';
             $query_args['version_number'] = $params['version_number'];
         }
+
+        //* sorting
+        if (isset($params['sort_by']) && isset($params['order'])) {
+            $sql .= ' ORDER BY Update_Size ' . strtoupper($params['order']);
+        } else if (isset($params['sort_by'])) {
+            $sql .= ' ORDER BY Update_Size ASC ';
+        } else if (isset($params['order'])) {
+            $sql .= ' ORDER BY Update_Id ' . strtoupper($params['order']);
+        } else {
+            $sql .= ' ORDER BY Update_Id ASC';
+        }
     }
 }
