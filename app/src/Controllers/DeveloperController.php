@@ -31,10 +31,13 @@ class DeveloperController extends BaseController
                 $this->getValidatedPaginationParams($params, $request)
             );
         }
+
+        $developers = $this->devModel->getDevelopers($params);
+
         //renderJson and send the data
         return $this->renderJson($response, [
-            "data" => $this->devModel->getDevelopers($params),
-        ], StatusCodeInterface::STATUS_OK);
+            "data" => $developers
+        ]);
     }
 
     public function handleGetDeveloperById(Request $request, Response $response, array $args): Response
@@ -51,9 +54,7 @@ class DeveloperController extends BaseController
         $developer = $this->devModel->getDeveloperById($dev_id);
 
         //if the genre doesn't exist, be transparent with the user
-        if ($developer === false) {
-            throw new HttpNotFoundException($request, "Could not find developer with id: [{$dev_id}]");
-        }
+        $this->validateObj($developer, $request, "Could not find game with id [{$dev_id}]");
 
         //render Json and send the data
         return $this->renderJson($response, [
