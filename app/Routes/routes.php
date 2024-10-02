@@ -9,6 +9,7 @@ use App\Controllers\CountryController;
 use App\Controllers\GameController;
 use App\Controllers\GenreController;
 use App\Controllers\DeveloperController;
+use App\Controllers\DLCController;
 
 use App\Controllers\ReviewController;
 use App\Controllers\UpdateController;
@@ -56,6 +57,12 @@ return static function (Slim\App $app): void {
 
     //* ROUTE: GET/developers/{developer_id}
     $app->get('/developers/{developer_id}', [DeveloperController::class, 'handleGetDeveloperById']);
+
+    //* ROUTE: GET/dlc
+    $app->get('/dlc', [DLCController::class, 'handleGetDLCs']);
+
+    //* ROUTE: GET/dlc/{dlc_id}
+    $app->get('/dlc/{dlc_id}', [DLCController::class, 'handleGetDLCById']);
 
     //* ROUTE: GET/reviews
     $app->get('/reviews', [ReviewController::class, 'handleGetReviews']);

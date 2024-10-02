@@ -26,11 +26,8 @@ class GenreController extends BaseController
 
         //using custom method to validate parameters
         if ($this->validatePaginationParams($params, $request)) {
-            //setting the pagination options through the genreModel
-            $this->genreModel->setPaginationOptions(
-                $params["page"],
-                $params["page_size"]
-            );
+            //setting the pagination options through the getValidatedPaginationParams 
+            $this->genreModel->setPaginationOptions($this->getValidatedPaginationParams($params, $request));
         }
         //renderJson and send the data
         return $this->renderJson($response, [

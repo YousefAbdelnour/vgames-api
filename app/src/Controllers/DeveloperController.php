@@ -28,8 +28,7 @@ class DeveloperController extends BaseController
         if ($this->validatePaginationParams($params, $request)) {
             //setting the pagination options through the genreModel
             $this->devModel->setPaginationOptions(
-                $params["page"],
-                $params["page_size"]
+                $this->getValidatedPaginationParams($params, $request)
             );
         }
         //renderJson and send the data
@@ -40,13 +39,15 @@ class DeveloperController extends BaseController
 
     public function handleGetDeveloperById(Request $request, Response $response, array $args): Response
     {
-        //check if the developer_id is set
-        if (!isset($args['developer_id'])) {
-            throw new HttpBadRequestException($request, "Invalid dev id.");
-        }
+        // check if ID is set
+        $this->checkIdSet($args, 'developer_id', $request);
+
+        $dev_id = $args['developer_id'];
+
+        $this->validateIdNum($dev_id, $request, "games");
 
         //genre name is equal to the genre name provided in the args
-        $dev_id = $args['developer_id'];
+
         $developer = $this->devModel->getDeveloperById($dev_id);
 
         //if the genre doesn't exist, be transparent with the user
