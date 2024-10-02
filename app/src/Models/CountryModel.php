@@ -117,5 +117,16 @@ class CountryModel extends BaseModel
             $sql .= ' AND Development_Companies LIKE :development_companies';
             $query_args['development_companies'] = '%' . $params['development_companies'] . '%';
         }
+
+        //* sorting
+        if (isset($params['sort_by']) && isset($params['order'])) {
+            $sql .= ' ORDER BY Average_Age ' . strtoupper($params['order']);
+        } else if (isset($params['sort_by'])) {
+            $sql .= ' ORDER BY Average_Age ASC ';
+        }
+        //* sorting by PK by default
+        else {
+            $sql .= ' ORDER BY Country_Name ASC ';
+        }
     }
 }
