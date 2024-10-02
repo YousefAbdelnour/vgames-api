@@ -25,12 +25,7 @@ class DeveloperController extends BaseController
         $params = $request->getQueryParams();
 
         //using custom method to validate parameters
-        if ($this->validatePaginationParams($params, $request)) {
-            //setting the pagination options through the genreModel
-            $this->devModel->setPaginationOptions(
-                $this->getValidatedPaginationParams($params, $request)
-            );
-        }
+        $this->devModel->setPaginationOptions($this->getValidatedPaginationParams($params, $request));
 
         $developers = $this->devModel->getDevelopers($params);
 
@@ -49,16 +44,13 @@ class DeveloperController extends BaseController
 
         $this->validateIdNum($dev_id, $request, "games");
 
-        //genre name is equal to the genre name provided in the args
-
         $developer = $this->devModel->getDeveloperById($dev_id);
 
-        //if the genre doesn't exist, be transparent with the user
         $this->validateObj($developer, $request, "Could not find game with id [{$dev_id}]");
 
         //render Json and send the data
         return $this->renderJson($response, [
             "data" => $developer,
-        ], StatusCodeInterface::STATUS_OK);
+        ]);
     }
 }

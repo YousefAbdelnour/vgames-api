@@ -25,35 +25,35 @@ class GenreController extends BaseController
         $params = $request->getQueryParams();
 
         //using custom method to validate parameters
-        if ($this->validatePaginationParams($params, $request)) {
-            //setting the pagination options through the getValidatedPaginationParams 
-            $this->genreModel->setPaginationOptions($this->getValidatedPaginationParams($params, $request));
-        }
+        $this->genreModel->setPaginationOptions($this->getValidatedPaginationParams($params, $request));
+
+        $genres = $this->genreModel->getGenres($params);
+
         //renderJson and send the data
         return $this->renderJson($response, [
-            "data" => $this->genreModel->getGenres($params),
-        ], StatusCodeInterface::STATUS_OK);
+            "data" => $genres
+        ]);
     }
 
     public function handleGetGenreByName(Request $request, Response $response, array $args): Response
     {
         //check if the genre_name is set
-        if (!isset($args['genre_name'])) {
-            throw new HttpBadRequestException($request, "Invalid genre name.");
-        }
+        $this->checkIdSet($args, 'genre_name', $request);
 
         //genre name is equal to the genre name provided in the args
         $genre_name = $args['genre_name'];
+
+        $this->validateIdStr($genre_name, $request, "genres");
+
         $genre = $this->genreModel->getGenreByName($genre_name);
 
         //if the genre doesn't exist, be transparent with the user
-        if ($genre === false) {
-            throw new HttpNotFoundException($request, "Could not find genre titled: [{$genre_name}]");
-        }
+        $this->validateObj($genre, $request, "Could not find genre titled: [{$genre_name}]");
+
 
         //render Json and send the data
         return $this->renderJson($response, [
             "data" => $genre,
-        ], StatusCodeInterface::STATUS_OK);
+        ]);
     }
 }

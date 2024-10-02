@@ -10,6 +10,7 @@ use App\Controllers\GameController;
 use App\Controllers\GenreController;
 use App\Controllers\DeveloperController;
 use App\Controllers\DLCController;
+use App\Controllers\PlatformController;
 
 use App\Controllers\ReviewController;
 use App\Controllers\UpdateController;
@@ -69,6 +70,12 @@ return static function (Slim\App $app): void {
 
     //* ROUTE: GET/reviews/{review_id}
     $app->get('/reviews/{review_id}', [ReviewController::class, 'handleGetReviewById']);
+
+    //* ROUTE: GET/platforms
+    $app->get('/platforms', [PlatformController::class, 'handleGetPlatforms']);
+
+    //* ROUTE: GET/platforms/{platforms_name}
+    $app->get('/platforms/{platform_name}', [PlatformController::class, 'handleGetPlatformByName']);
 
     //* ROUTE: GET /ping
     $app->get('/ping', function (Request $request, Response $response, $args) {
