@@ -31,7 +31,7 @@ class DeveloperController extends BaseController
 
         //renderJson and send the data
         return $this->renderJson($response, [
-            "data" => $developers
+            "developers" => $developers
         ]);
     }
 
@@ -42,7 +42,7 @@ class DeveloperController extends BaseController
 
         $dev_id = $args['developer_id'];
 
-        $this->validateIdNum($dev_id, $request, "games");
+        $this->validateIdNum($dev_id, $request, "Developers");
 
         $developer = $this->devModel->getDeveloperById($dev_id);
 
@@ -50,7 +50,7 @@ class DeveloperController extends BaseController
 
         //render Json and send the data
         return $this->renderJson($response, [
-            "data" => $developer,
+            "developer" => $developer,
         ]);
     }
 }
