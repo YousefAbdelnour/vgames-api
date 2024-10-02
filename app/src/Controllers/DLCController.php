@@ -26,7 +26,7 @@ class DLCController extends BaseController
 
         // response
         return $this->renderJson($response, [
-            "data" => $dlc,
+            "DLCs" => $dlc,
         ]);
     }
 
@@ -46,7 +46,7 @@ class DLCController extends BaseController
         $this->validateObj($dlc, $request, "Could not find DLC with id [{$dlc_id}]");
 
         return $this->renderJson($response, [
-            "data" => $dlc,
+            "DLC" => $dlc,
         ]);
     }
 }

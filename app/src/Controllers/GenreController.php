@@ -31,7 +31,7 @@ class GenreController extends BaseController
 
         //renderJson and send the data
         return $this->renderJson($response, [
-            "data" => $genres
+            "genres" => $genres
         ]);
     }
 
@@ -53,7 +53,7 @@ class GenreController extends BaseController
 
         //render Json and send the data
         return $this->renderJson($response, [
-            "data" => $genre,
+            "genre" => $genre,
         ]);
     }
 }

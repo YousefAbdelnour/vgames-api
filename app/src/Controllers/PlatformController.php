@@ -26,7 +26,7 @@ class PlatformController extends BaseController
 
         // response
         return $this->renderJson($response, [
-            "data" => $platforms,
+            "platforms" => $platforms,
         ]);
     }
 
@@ -46,7 +46,7 @@ class PlatformController extends BaseController
         $this->validateObj($platform, $request, "Could not find game with id [{$platform_name}]");
 
         return $this->renderJson($response, [
-            "data" => $platform,
+            "platform" => $platform,
         ]);
     }
 }

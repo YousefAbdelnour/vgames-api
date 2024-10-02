@@ -60,10 +60,10 @@ return static function (Slim\App $app): void {
     $app->get('/developers/{developer_id}', [DeveloperController::class, 'handleGetDeveloperById']);
 
     //* ROUTE: GET/dlc
-    $app->get('/dlc', [DLCController::class, 'handleGetDLCs']);
+    $app->get('/dlcs', [DLCController::class, 'handleGetDLCs']);
 
     //* ROUTE: GET/dlc/{dlc_id}
-    $app->get('/dlc/{dlc_id}', [DLCController::class, 'handleGetDLCById']);
+    $app->get('/dlcs/{dlc_id}', [DLCController::class, 'handleGetDLCById']);
 
     //* ROUTE: GET/reviews
     $app->get('/reviews', [ReviewController::class, 'handleGetReviews']);
