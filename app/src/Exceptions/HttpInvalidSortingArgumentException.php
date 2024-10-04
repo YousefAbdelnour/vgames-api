@@ -17,5 +17,5 @@ class HttpInvalidSortingArgumentException extends HttpSpecializedException
     protected $message = 'Invalid Sorting argument.';
 
     protected string $title = '400 Bad Request';
-    protected string $description = 'Sorting arguments must be either asc or dsc and a valid field from resource that can be a valid sorting argument.';
+    protected string $description = 'Sorting arguments must be either asc or desc and a valid field from resource that can be a valid sorting argument.';
 }
