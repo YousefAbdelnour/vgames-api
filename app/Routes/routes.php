@@ -38,18 +38,21 @@ return static function (Slim\App $app): void {
     //* ROUTE: GET/games
     $app->get('/games', [GameController::class, 'handleGetGames']);
 
+    //* ROUTE: GET/games/{game_id}
+    $app->get('/games/{game_id}', [GameController::class, 'handleGetGameById']);
+
+    //* ROUTE: GET/games/{game_id}/reviews
+    $app->get('/games/{game_id}/reviews', [GameController::class, 'handleGetReviewsByGameId']);
+  
+    //* ROUTE: GET/games/{game_id}/platforms
+    $app->get('/games/{game_id}/platforms', [GameController::class, 'handleGetPlatformsByGameId']);
+
     //* ROUTE: GET/updates
     $app->get('/updates', [UpdateController::class, 'handleGetUpdates']);
 
     //* ROUTE: GET/updates/{update_id}
     $app->get('/updates/{update_id}', [UpdateController::class, 'handleGetUpdateById']);
-
-    //* ROUTE: GET/games/{game_id}
-    $app->get('/games/{game_id}', [GameController::class, 'handleGetGameById']);
-
-    //* ROUTE: GET/games/{game_id}/platforms
-    $app->get('/games/{game_id}/platforms', [GameController::class, 'handleGetPlatformsByGameId']);
-
+  
     //* ROUTE: GET/genres
     $app->get('/genres', [GenreController::class, 'handleGetGenres']);
 

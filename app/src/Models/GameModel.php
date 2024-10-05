@@ -18,6 +18,8 @@ class GameModel extends BaseModel
     {
         $query_args = [];
 
+        //TODO: filtering, sorting
+
         $sql = "SELECT * FROM {$this->table_name} WHERE 1 ";
 
         return (array) $this->paginate($sql, $query_args);
@@ -27,6 +29,22 @@ class GameModel extends BaseModel
     {
         $sql = "SELECT * FROM {$this->table_name} where game_id = :game_id";
         return $this->fetchSingle($sql, ["game_id" => $game_id]);
+    }
+
+    public function getReviewsByGameId($game): array
+    {
+        $gameInfo = $this->getInfoAboutGame($game);
+
+        $sql = "SELECT * FROM review WHERE game_id = :game_id";
+
+        $reviews = (array) $this->paginate($sql, ["game_id" => $game["Game_Id"]]);
+
+        return [
+            "country" => $gameInfo["country"],
+            "developer" => $gameInfo["developer"],
+            "genre" => $gameInfo["genre"],
+            "reviews" => $reviews
+        ];
     }
 
     public function getPlatformsByGameId($game): array
@@ -39,7 +57,7 @@ class GameModel extends BaseModel
 
         $gameInfo = $this->getInfoAboutGame($game);
 
-        $platforms = $this->paginate($sql, ["game_id" => $game["Game_Id"]]);
+        $platforms = (array) $this->paginate($sql, ["game_id" => $game["Game_Id"]]);
 
         return [
             "country" => $gameInfo["country"],
