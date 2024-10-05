@@ -47,6 +47,26 @@ class GameModel extends BaseModel
         ];
     }
 
+    public function getPlatformsByGameId($game): array
+    {
+        $sql = <<<SQL
+        SELECT * FROM platform p, platform_game pg
+                WHERE pg.game_id = :game_id
+                    AND pg.platform_name = p.platform_name
+        SQL;
+
+        $gameInfo = $this->getInfoAboutGame($game);
+
+        $platforms = (array) $this->paginate($sql, ["game_id" => $game["Game_Id"]]);
+
+        return [
+            "country" => $gameInfo["country"],
+            "developer" => $gameInfo["developer"],
+            "genre" => $gameInfo["genre"],
+            "platforms" => $platforms
+        ];
+    }
+
     private function getInfoAboutGame($game)
     {
         $info["developer"] = $this->developer_model->getDeveloperById($game["Developer_Id"]);
