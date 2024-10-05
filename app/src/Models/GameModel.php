@@ -36,6 +36,7 @@ class GameModel extends BaseModel
         $gameInfo = $this->getInfoAboutGame($game);
 
         $sql = "SELECT * FROM review WHERE game_id = :game_id";
+
         $reviews = (array) $this->paginate($sql, ["game_id" => $game["Game_Id"]]);
 
         return [

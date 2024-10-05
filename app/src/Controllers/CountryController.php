@@ -20,6 +20,8 @@ class CountryController extends BaseController
         // pagination. if it is requested then set, otherwise keep going
         $this->country_Model->setPaginationOptions($this->getValidatedPaginationParams($params, $request));
 
+        $this->validateSortingArg($request, $params, 'average_age');
+
         // response
         return $this->renderJson($response, [
             "country" => $this->country_Model->getCountries($params),
