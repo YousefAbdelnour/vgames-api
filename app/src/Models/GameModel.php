@@ -9,7 +9,7 @@ class GameModel extends BaseModel
 
     private string $table_name = "game";
 
-    public function __construct(PDOService $pdo)
+    public function __construct(PDOService $pdo, private CountryModel $country_model, private DeveloperModel $developer_model, private GenreModel $genre_model)
     {
         parent::__construct($pdo);
     }
@@ -27,5 +27,33 @@ class GameModel extends BaseModel
     {
         $sql = "SELECT * FROM {$this->table_name} where game_id = :game_id";
         return $this->fetchSingle($sql, ["game_id" => $game_id]);
+    }
+
+    public function getPlatformsByGameId($game): array
+    {
+        $sql = <<<SQL
+        SELECT * FROM platform p, platform_game pg
+                WHERE pg.game_id = :game_id
+                    AND pg.platform_name = p.platform_name
+        SQL;
+
+        $gameInfo = $this->getInfoAboutGame($game);
+
+        $platforms = $this->paginate($sql, ["game_id" => $game["Game_Id"]]);
+
+        return [
+            "country" => $gameInfo["country"],
+            "developer" => $gameInfo["developer"],
+            "genre" => $gameInfo["genre"],
+            "platforms" => $platforms
+        ];
+    }
+
+    private function getInfoAboutGame($game)
+    {
+        $info["developer"] = $this->developer_model->getDeveloperById($game["Developer_Id"]);
+        $info["country"] = $this->country_model->getCountryByName($game["Country_Name"]);
+        $info["genre"] = $this->genre_model->getGenreByName($game["Genre_Name"]);
+        return $info;
     }
 }
