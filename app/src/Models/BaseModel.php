@@ -251,4 +251,28 @@ abstract class BaseModel
         $this->current_page = $params['page'] ?? $this->current_page;
         $this->records_per_page = $params['page_size'] ?? $this->records_per_page;
     }
+
+    protected function sort(array $params, String &$sql, object $childModel)
+    {
+        if (isset($params['sort_by']) && isset($params['order'])) {
+            $sql .= " ORDER BY {$this->getValidField($params['sort_by'],$childModel)}
+            {$this->getValidOrder($params['order'])}";
+        } else if (isset($params['sort_by'])) {
+            $sql .= " ORDER BY {$this->getValidField($params['sort_by'],$childModel)}";
+        } else if (isset($params['order'])) {
+            $sql .= " ORDER BY {$childModel->default_sort_field} {$this->getValidOrder($params['order'])}";
+        } else {
+            $sql .= " ORDER BY {$childModel->default_sort_field}";
+        }
+    }
+
+    private function getValidOrder(string $order)
+    {
+        return strcasecmp($order, 'desc') == 0 ? 'desc' : 'asc';
+    }
+
+    private function getValidField(string $field, $childModel)
+    {
+        return in_array(strtolower($field), $childModel->fields) ? $field : $childModel->default_sort_field;
+    }
 }

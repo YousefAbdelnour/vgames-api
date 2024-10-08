@@ -28,7 +28,7 @@ class ReviewController extends BaseController
 
         // response
         return $this->renderJson($response, [
-            "data" => $reviews,
+            "reviews" => $reviews,
         ]);
     }
 
@@ -48,7 +48,7 @@ class ReviewController extends BaseController
         $this->validateObj($review, $request, "Could not find review with id [{$review_id}]");
 
         return $this->renderJson($response, [
-            "data" => $review,
+            "review" => $review,
         ]);
     }
 }

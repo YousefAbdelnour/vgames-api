@@ -8,6 +8,9 @@ use App\Controllers\AboutController;
 use App\Controllers\CountryController;
 use App\Controllers\GameController;
 use App\Controllers\GenreController;
+use App\Controllers\DeveloperController;
+use App\Controllers\DLCController;
+use App\Controllers\PlatformController;
 
 use App\Controllers\ReviewController;
 use App\Controllers\UpdateController;
@@ -35,26 +38,50 @@ return static function (Slim\App $app): void {
     //* ROUTE: GET/games
     $app->get('/games', [GameController::class, 'handleGetGames']);
 
+    //* ROUTE: GET/games/{game_id}
+    $app->get('/games/{game_id}', [GameController::class, 'handleGetGameById']);
+
+    //* ROUTE: GET/games/{game_id}/reviews
+    $app->get('/games/{game_id}/reviews', [GameController::class, 'handleGetReviewsByGameId']);
+  
+    //* ROUTE: GET/games/{game_id}/platforms
+    $app->get('/games/{game_id}/platforms', [GameController::class, 'handleGetPlatformsByGameId']);
+
     //* ROUTE: GET/updates
     $app->get('/updates', [UpdateController::class, 'handleGetUpdates']);
 
     //* ROUTE: GET/updates/{update_id}
     $app->get('/updates/{update_id}', [UpdateController::class, 'handleGetUpdateById']);
-
-    //* ROUTE: GET/games/{game_id}
-    $app->get('/games/{game_id}', [GameController::class, 'handleGetGameById']);
-
+  
     //* ROUTE: GET/genres
     $app->get('/genres', [GenreController::class, 'handleGetGenres']);
 
     //* ROUTE: GET/genres/{genre_name}
     $app->get('/genres/{genre_name}', [GenreController::class, 'handleGetGenreByName']);
 
+    //* ROUTE: GET/developers
+    $app->get('/developers', [DeveloperController::class, 'handleGetDevelopers']);
+
+    //* ROUTE: GET/developers/{developer_id}
+    $app->get('/developers/{developer_id}', [DeveloperController::class, 'handleGetDeveloperById']);
+
+    //* ROUTE: GET/dlc
+    $app->get('/dlcs', [DLCController::class, 'handleGetDLCs']);
+
+    //* ROUTE: GET/dlc/{dlc_id}
+    $app->get('/dlcs/{dlc_id}', [DLCController::class, 'handleGetDLCById']);
+
     //* ROUTE: GET/reviews
     $app->get('/reviews', [ReviewController::class, 'handleGetReviews']);
 
     //* ROUTE: GET/reviews/{review_id}
     $app->get('/reviews/{review_id}', [ReviewController::class, 'handleGetReviewById']);
+
+    //* ROUTE: GET/platforms
+    $app->get('/platforms', [PlatformController::class, 'handleGetPlatforms']);
+
+    //* ROUTE: GET/platforms/{platforms_name}
+    $app->get('/platforms/{platform_name}', [PlatformController::class, 'handleGetPlatformByName']);
 
     //* ROUTE: GET /ping
     $app->get('/ping', function (Request $request, Response $response, $args) {
