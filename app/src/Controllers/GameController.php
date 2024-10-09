@@ -32,18 +32,7 @@ class GameController extends BaseController
 
     public function handleGetGameById(Request $request, Response $response, array $args): Response
     {
-        // check if ID is set
-        $this->checkIdSet($args, 'game_id', $request);
-
-        $game_id = $args['game_id'];
-
-        // validate ID, in this case it must be a positive number (function checks if the ID is composed of digits only)
-        $this->validateIdNum($game_id, $request, "games");
-
-        $game = $this->game_model->getGameById($game_id);
-
-        // check if the $game obj returned by sql is present
-        $this->validateObj($game, $request, "Could not find game with id [{$game_id}]");
+        $game = $this->validateGameId($args, $request);
 
         return $this->renderJson($response, [
             "game" => $game,
@@ -52,18 +41,7 @@ class GameController extends BaseController
 
     public function handleGetReviewsByGameId(Request $request, Response $response, array $args): Response
     {
-        // check if ID is set
-        $this->checkIdSet($args, 'game_id', $request);
-
-        $game_id = $args['game_id'];
-
-        // validate ID, in this case it must be a positive number (function checks if the ID is composed of digits only)
-        $this->validateIdNum($game_id, $request, "games");
-
-        $game = $this->game_model->getGameById($game_id);
-
-        // check if the $game obj returned by sql is present
-        $this->validateObj($game, $request, "Could not find game with id [{$game_id}]");
+        $game = $this->validateGameId($args, $request);
 
         // PAGINATION
         $params = $request->getQueryParams();
@@ -87,18 +65,7 @@ class GameController extends BaseController
 
     public function handleGetPlatformsByGameId(Request $request, Response $response, array $args): Response
     {
-        // check if ID is set
-        $this->checkIdSet($args, 'game_id', $request);
-
-        $game_id = $args['game_id'];
-
-        // validate ID, in this case it must be a positive number (function checks if the ID is composed of digits only)
-        $this->validateIdNum($game_id, $request, "games");
-
-        $game = $this->game_model->getGameById($game_id);
-
-        // check if the $game obj returned by sql is present
-        $this->validateObj($game, $request, "Could not find game with id [{$game_id}]");
+        $game = $this->validateGameId($args, $request);
 
         // PAGINATION
         $params = $request->getQueryParams();
@@ -117,5 +84,23 @@ class GameController extends BaseController
                 "platforms" => $payload["platforms"]
             ],
         ]);
+    }
+
+    private function validateGameId($args, $request)
+    {
+        // check if ID is set
+        $this->checkIdSet($args, 'game_id', $request);
+
+        $game_id = $args['game_id'];
+
+        // validate ID, in this case it must be a positive number (function checks if the ID is composed of digits only)
+        $this->validateIdNum($game_id, $request, "games");
+
+        $game = $this->game_model->getGameById($game_id);
+
+        // check if the $game obj returned by sql is present
+        $this->validateObj($game, $request, "Could not find game with id [{$game_id}]");
+
+        return $game;
     }
 }
