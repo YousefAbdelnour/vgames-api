@@ -46,9 +46,9 @@ class Result
         return new Result(true, $message, $data);
     }
 
-    public static function fail($message): Result
+    public static function fail($message, $errors = null): Result
     {
-        return new Result(false, $message);
+        return new Result(false, $message, $errors);
     }
 
     public function isSuccess(): bool
@@ -66,7 +66,7 @@ class Result
         return $this->data;
     }
 
-    public function getErrors(): string
+    public function getMessage(): string
     {
         return $this->message;
     }

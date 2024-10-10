@@ -8,7 +8,7 @@ class PlatformModel extends BaseModel
 {
 
     private string $table_name = "platform";
-
+    public string $default_sort_field = 'Release_Date';
     public function __construct(PDOService $pdo)
     {
         parent::__construct($pdo);
@@ -19,7 +19,6 @@ class PlatformModel extends BaseModel
         $query_args = [];
 
         $sql = "SELECT * FROM {$this->table_name} WHERE 1 ";
-
         return (array) $this->paginate($sql, $query_args);
     }
 
