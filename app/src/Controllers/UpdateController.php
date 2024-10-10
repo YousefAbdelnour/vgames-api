@@ -4,12 +4,8 @@ namespace App\Controllers;
 
 use App\Models\UpdateModel;
 use Fig\Http\Message\StatusCodeInterface;
-use App\Exceptions\HttpInvalidPaginationParamsException;
-use App\Validation\ValidationHelper;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
-use Slim\Exception\HttpBadRequestException;
-use Slim\Exception\HttpNotFoundException;
 
 class UpdateController extends BaseController
 {
@@ -24,6 +20,9 @@ class UpdateController extends BaseController
 
         // pagination. if it is requested then set, otherwise keep going
         $this->update_model->setPaginationOptions($this->getValidatedPaginationParams($params, $request));
+
+        $this->validateSortingArg($request, $params, 'update_size');
+
         // response
         return $this->renderJson($response, [
             "updates" => $this->update_model->getUpdates($params),
