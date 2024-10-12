@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Sep 22, 2024 at 08:37 PM
+-- Generation Time: Oct 12, 2024 at 05:54 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -31,7 +31,7 @@ CREATE TABLE `country` (
   `Country_Name` varchar(255) NOT NULL,
   `Most_Played_Game_Id` int(11) DEFAULT NULL,
   `Development_Companies` varchar(5000) DEFAULT NULL COMMENT 'CSV Format for array parsing',
-  `Most_Poplar_Genre` varchar(255) NOT NULL,
+  `Most_Popular_Genre` varchar(255) NOT NULL,
   `Average_Age` double NOT NULL,
   `Average_Internet_Speed` double NOT NULL,
   `Language` varchar(255) NOT NULL
@@ -41,7 +41,7 @@ CREATE TABLE `country` (
 -- Dumping data for table `country`
 --
 
-INSERT INTO `country` (`Country_Name`, `Most_Played_Game_Id`, `Development_Companies`, `Most_Poplar_Genre`, `Average_Age`, `Average_Internet_Speed`, `Language`) VALUES
+INSERT INTO `country` (`Country_Name`, `Most_Played_Game_Id`, `Development_Companies`, `Most_Popular_Genre`, `Average_Age`, `Average_Internet_Speed`, `Language`) VALUES
 ('Canada', NULL, 'Indie Studio A', 'Adventure', 22.5, 120, 'English, French'),
 ('France', 2, 'Ubisoft', 'RPG', 24, 100, 'French'),
 ('Poland', 3, 'CD Projekt Red', 'Strategy', 30.2, 75, 'Polish'),
@@ -96,14 +96,14 @@ CREATE TABLE `dlc` (
   `Revenue` double NOT NULL,
   `Hard_Copies_Sold` bigint(20) NOT NULL,
   `Digital_Copies_Sold` bigint(20) NOT NULL,
-  `Highest_Reveue_Region` varchar(255) NOT NULL
+  `Highest_Revenue_Region` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 --
 -- Dumping data for table `dlc`
 --
 
-INSERT INTO `dlc` (`DLC_Id`, `Game_Id`, `Name`, `Release_Date`, `Price`, `Description`, `Total_Sales`, `Sales_Id`, `Revenue`, `Hard_Copies_Sold`, `Digital_Copies_Sold`, `Highest_Reveue_Region`) VALUES
+INSERT INTO `dlc` (`DLC_Id`, `Game_Id`, `Name`, `Release_Date`, `Price`, `Description`, `Total_Sales`, `Sales_Id`, `Revenue`, `Hard_Copies_Sold`, `Digital_Copies_Sold`, `Highest_Revenue_Region`) VALUES
 (1, 1, 'The Hidden Ones', '2018-01-23', 9.99, 'Expansion for Assassin\'s Creed', 1000000, 1, 9990000, 50000, 950000, 'USA'),
 (2, 2, 'Episode One', '2006-06-01', 7.99, 'Expansion for Half-Life 2', 1200000, 2, 9590000, 70000, 1130000, 'USA'),
 (3, 3, 'Blood and Wine', '2016-05-31', 14.99, 'Expansion for The Witcher 3', 500000, 3, 7495000, 10000, 490000, 'Poland');
@@ -274,7 +274,7 @@ INSERT INTO `review` (`Review_Id`, `Game_Id`, `Rating`, `Date`, `Likes`, `Platfo
 --
 ALTER TABLE `country`
   ADD PRIMARY KEY (`Country_Name`),
-  ADD KEY `Country_Most_Popular_Genre_FK` (`Most_Poplar_Genre`);
+  ADD KEY `Country_Most_Popular_Genre_FK` (`Most_Popular_Genre`);
 
 --
 -- Indexes for table `developer`
@@ -355,7 +355,7 @@ ALTER TABLE `game`
 -- Constraints for table `country`
 --
 ALTER TABLE `country`
-  ADD CONSTRAINT `Country_Most_Popular_Genre_FK` FOREIGN KEY (`Most_Poplar_Genre`) REFERENCES `genre` (`Genre_Name`);
+  ADD CONSTRAINT `Country_Most_Popular_Genre_FK` FOREIGN KEY (`Most_Popular_Genre`) REFERENCES `genre` (`Genre_Name`);
 
 --
 -- Constraints for table `dlc`

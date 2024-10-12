@@ -44,7 +44,7 @@ class DLCModel extends BaseModel
 
         //* Revenue Region
         if (isset($params['highest_rev_region'])) {
-            $sql .= ' AND Highest_reveue_region LIKE :highest_rev_region';
+            $sql .= ' AND Highest_revenue_region LIKE :highest_rev_region';
             $query_args['highest_rev_region'] = '%' . $params['highest_rev_region'] . '%';
         }
 

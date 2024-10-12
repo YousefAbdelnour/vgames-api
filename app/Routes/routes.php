@@ -43,7 +43,7 @@ return static function (Slim\App $app): void {
 
     //* ROUTE: GET/games/{game_id}/reviews
     $app->get('/games/{game_id}/reviews', [GameController::class, 'handleGetReviewsByGameId']);
-  
+
     //* ROUTE: GET/games/{game_id}/platforms
     $app->get('/games/{game_id}/platforms', [GameController::class, 'handleGetPlatformsByGameId']);
 
@@ -52,12 +52,15 @@ return static function (Slim\App $app): void {
 
     //* ROUTE: GET/updates/{update_id}
     $app->get('/updates/{update_id}', [UpdateController::class, 'handleGetUpdateById']);
-  
+
     //* ROUTE: GET/genres
     $app->get('/genres', [GenreController::class, 'handleGetGenres']);
 
     //* ROUTE: GET/genres/{genre_name}
     $app->get('/genres/{genre_name}', [GenreController::class, 'handleGetGenreByName']);
+
+    //* ROUTE: GET/genres/{genre_name}/games
+    $app->get('/genres/{genre_name}/games', [GenreController::class, 'handleGetGamesByGenreName']);
 
     //* ROUTE: GET/developers
     $app->get('/developers', [DeveloperController::class, 'handleGetDevelopers']);
