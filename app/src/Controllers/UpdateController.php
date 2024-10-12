@@ -21,8 +21,6 @@ class UpdateController extends BaseController
         // pagination. if it is requested then set, otherwise keep going
         $this->update_model->setPaginationOptions($this->getValidatedPaginationParams($params, $request));
 
-        $this->validateSortingArg($request, $params, 'update_size');
-
         // response
         return $this->renderJson($response, [
             "updates" => $this->update_model->getUpdates($params),

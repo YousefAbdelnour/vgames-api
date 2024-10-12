@@ -8,6 +8,10 @@ class UpdateModel extends BaseModel
 {
     private string $table_name = "game_update";
 
+    public array $fields = ['update_id', 'update_type', 'limited_time_event', 'game_id', 'date', 'description', 'version_number', 'update_size', 'new_features'];
+
+    public string $default_sort_field = 'update_id';
+
     public function __construct(PDOService $pdo)
     {
         parent::__construct($pdo);
@@ -19,7 +23,8 @@ class UpdateModel extends BaseModel
 
         $sql = "SELECT * FROM {$this->table_name} WHERE 1 ";
 
-        $this->filterAndSort($params, $sql, $query_args);
+        $this->filter($params, $sql, $query_args);
+        $this->sort($params, $sql, $this);
 
         $result = $this->paginate($sql, $query_args);
 
@@ -47,7 +52,7 @@ class UpdateModel extends BaseModel
         return $data;
     }
 
-    public static function filterAndSort(array $params, String &$sql, array &$query_args)
+    public static function filter(array $params, String &$sql, array &$query_args)
     {
         if (isset($params["limited_time_event"])) {
             //* TODO: parse 0 and 1 to true and false
@@ -83,17 +88,6 @@ class UpdateModel extends BaseModel
         if (isset($params['version_number'])) {
             $sql .= ' AND Version_Number LIKE CONCAT(:version_number, "%")';
             $query_args['version_number'] = $params['version_number'];
-        }
-
-        //* sorting
-        if (isset($params['sort_by']) && isset($params['order'])) {
-            $sql .= ' ORDER BY Update_Size ' . strtoupper($params['order']);
-        } else if (isset($params['sort_by'])) {
-            $sql .= ' ORDER BY Update_Size ASC ';
-        } else if (isset($params['order'])) {
-            $sql .= ' ORDER BY Update_Id ' . strtoupper($params['order']);
-        } else {
-            $sql .= ' ORDER BY Update_Id ASC';
         }
     }
 }

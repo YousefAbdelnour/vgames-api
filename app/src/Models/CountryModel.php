@@ -8,6 +8,10 @@ class CountryModel extends BaseModel
 {
     private string $table_name = "country";
 
+    public array $fields = ['country_name', 'most_played_game_id', 'development_companies', 'most_popular_genre', 'average_age', 'average_internet_speed', 'Language'];
+
+    public string $default_sort_field = 'country_name';
+
     public function __construct(PDOService $pdo)
     {
         parent::__construct($pdo);
@@ -18,7 +22,8 @@ class CountryModel extends BaseModel
         $query_args = [];
 
         $sql = "SELECT * FROM {$this->table_name} WHERE 1 ";
-        $this->filterAndSort($params, $sql, $query_args);
+        $this->filter($params, $sql, $query_args);
+        $this->sort($params, $sql, $this);
 
         $result = $this->paginate($sql, $query_args);
         $result['data'] = $this->parseDevelopment_Companies($result['data']);
@@ -81,7 +86,7 @@ class CountryModel extends BaseModel
         return $data;
     }
 
-    public static function filterAndSort(array $params, String &$sql, array &$query_args)
+    public static function filter(array $params, String &$sql, array &$query_args)
     {
         if (isset($params['language'])) {
             $sql .= ' AND Language LIKE CONCAT(:language, "%")';
@@ -116,19 +121,6 @@ class CountryModel extends BaseModel
         if (isset($params['development_companies'])) {
             $sql .= ' AND Development_Companies LIKE :development_companies';
             $query_args['development_companies'] = '%' . $params['development_companies'] . '%';
-        }
-
-        //* sorting
-        if (isset($params['sort_by']) && isset($params['order'])) {
-            $sql .= ' ORDER BY Average_Age ' . strtoupper($params['order']);
-        } else if (isset($params['sort_by'])) {
-            $sql .= ' ORDER BY Average_Age ASC ';
-        } else if (isset($params['order'])) {
-            $sql .= ' ORDER BY Country_Name ' . strtoupper($params['order']);
-        }
-        //* sorting by PK by default
-        else {
-            $sql .= ' ORDER BY Country_Name ASC ';
         }
     }
 }
