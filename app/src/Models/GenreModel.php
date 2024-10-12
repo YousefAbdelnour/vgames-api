@@ -91,4 +91,52 @@ class GenreModel extends BaseModel
             $query_args['target_audience'] = $params['target_audience'];
         }
     }
+
+    public function getGamesByGenreName($genre_name): array
+    {
+        $genre = $this->getGenreByName($genre_name);
+
+        $games_query = <<<SQL
+        SELECT *
+        FROM Game
+        WHERE Genre_Name = :genre_name
+        SQL;
+
+        $games = $this->paginate($games_query, ["genre_name" => $genre_name]);
+
+        $dev_query = <<<SQL
+        SELECT d.*
+        FROM Developer d
+        JOIN Game g ON g.Developer_Id = d.Dev_Id
+        WHERE g.Genre_Name = :genre_name
+        SQL;
+
+        $devs = $this->fetchAll($dev_query, ["genre_name" => $genre_name]);
+
+        $dlc_query = <<<SQL
+        SELECT c.*
+        FROM dlc c
+        JOIN Game g ON g.game_id = c.game_id
+        WHERE g.Genre_name = :genre_name
+        SQL;
+
+        $dlc = $this->fetchAll($dlc_query, ["genre_name" => $genre_name]);
+
+        $country_query = <<<SQL
+        SELECT co.*
+        FROM genre ge
+        JOIN country co ON ge.Genre_Name = co.Most_Popular_Genre
+        WHERE co.Most_Popular_Genre = :genre_name
+        SQL;
+
+        $country = $this->fetchAll($country_query, ["genre_name" => $genre_name]);
+
+        return array(
+            "genre" => $genre,
+            "games" => $games,
+            "developers" => $devs,
+            "dlc" => $dlc,
+            "country" => $country,
+        );
+    }
 }
