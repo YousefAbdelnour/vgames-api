@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Oct 12, 2024 at 05:54 PM
+-- Generation Time: Oct 12, 2024 at 06:46 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -253,17 +253,17 @@ CREATE TABLE `review` (
   `Rating` double NOT NULL,
   `Date` date NOT NULL,
   `Likes` bigint(20) NOT NULL,
-  `Platform_Id` int(11) NOT NULL
+  `Platform_Name` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 --
 -- Dumping data for table `review`
 --
 
-INSERT INTO `review` (`Review_Id`, `Game_Id`, `Rating`, `Date`, `Likes`, `Platform_Id`) VALUES
-(1, 1, 4.5, '2020-06-15', 50000, 1),
-(2, 2, 4.8, '2006-07-01', 80000, 2),
-(3, 3, 4.9, '2016-06-12', 70000, 3);
+INSERT INTO `review` (`Review_Id`, `Game_Id`, `Rating`, `Date`, `Likes`, `Platform_Name`) VALUES
+(1, 1, 4.5, '2020-06-15', 50000, 'PlayStation'),
+(2, 2, 4.8, '2006-07-01', 80000, 'Xbox'),
+(3, 3, 4.9, '2016-06-12', 70000, 'Steam');
 
 --
 -- Indexes for dumped tables
@@ -329,7 +329,8 @@ ALTER TABLE `platform_game`
 --
 ALTER TABLE `review`
   ADD PRIMARY KEY (`Review_Id`),
-  ADD KEY `Review_Game_Id_FK` (`Game_Id`);
+  ADD KEY `Review_Game_Id_FK` (`Game_Id`),
+  ADD KEY `Review_Platform_Name_FK` (`Platform_Name`);
 
 --
 -- AUTO_INCREMENT for dumped tables
@@ -388,7 +389,8 @@ ALTER TABLE `platform_game`
 -- Constraints for table `review`
 --
 ALTER TABLE `review`
-  ADD CONSTRAINT `Review_Game_Id_FK` FOREIGN KEY (`Game_Id`) REFERENCES `game` (`Game_Id`) ON DELETE CASCADE ON UPDATE CASCADE;
+  ADD CONSTRAINT `Review_Game_Id_FK` FOREIGN KEY (`Game_Id`) REFERENCES `game` (`Game_Id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `Review_Platform_Name_FK` FOREIGN KEY (`Platform_Name`) REFERENCES `platform` (`Platform_Name`) ON DELETE CASCADE ON UPDATE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
