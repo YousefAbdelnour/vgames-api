@@ -38,7 +38,7 @@ class PlatformController extends BaseController
         $platform_name = $args['platform_name'];
 
         // validate ID, in this case it must be a positive number (function checks if the ID is composed of digits only)
-        $this->validateIdStr($platform_name, $request, "platform");
+        $this->validateIdStr($platform_name, $request, "Platforms");
 
         $platform = $this->platformModel->getPlatformByName($platform_name);
 
