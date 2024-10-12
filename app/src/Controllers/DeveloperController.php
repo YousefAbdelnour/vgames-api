@@ -58,28 +58,28 @@ class DeveloperController extends BaseController
     }
 
     //! POST
-    public function handleCreateDevelopers(Request $request, Response $response): Response
-    {
-        // 1) Retrieve the info about the new players to be created from
-        // the request body.
-        $newDev = $request->getParsedBody();
-        dd(data: $newDev);
-        // Create the new players
-        $result = $this->developersService->createDeveloper($newDev);
-        $payload = [];
-        if ($result->isSuccess()) {
-            //Prepare a successful response
-            $payload["success"] = true;
-            $payload["status"] = 201;
-            $payload["message"] = $result->getData();
-        } else {
-            //Prepare a failure response
+    // public function handleCreateDevelopers(Request $request, Response $response): Response
+    // {
+    //     // 1) Retrieve the info about the new players to be created from
+    //     // the request body.
+    //     $newDev = $request->getParsedBody();
+    //     dd(data: $newDev);
+    //     // Create the new players
+    //     $result = $this->developersService->createDeveloper($newDev);
+    //     $payload = [];
+    //     if ($result->isSuccess()) {
+    //         //Prepare a successful response
+    //         $payload["success"] = true;
+    //         $payload["status"] = 201;
+    //         $payload["message"] = $result->getData();
+    //     } else {
+    //         //Prepare a failure response
 
-            $payload["success"] = false;
-            $payload["status"] = 400;
-            $payload["message"] = $result->getMessage();
-        }
+    //         $payload["success"] = false;
+    //         $payload["status"] = 400;
+    //         $payload["message"] = $result->getMessage();
+    //     }
 
-        return $this->renderJson($response, $payload, 201);
-    }
+    //     return $this->renderJson($response, $payload, 201);
+    // }
 }
