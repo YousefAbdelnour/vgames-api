@@ -43,7 +43,7 @@ class GenreController extends BaseController
         //genre name is equal to the genre name provided in the args
         $genre_name = $args['genre_name'];
 
-        $this->validateIdStr($genre_name, $request, "genres");
+        $this->validateIdStr($genre_name, $request, "Genres");
 
         $genre = $this->genreModel->getGenreByName($genre_name);
 

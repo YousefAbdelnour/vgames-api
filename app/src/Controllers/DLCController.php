@@ -26,7 +26,7 @@ class DLCController extends BaseController
 
         // response
         return $this->renderJson($response, [
-            "DLCs" => $dlc,
+            "dlcs" => $dlc,
         ]);
     }
 
@@ -38,7 +38,7 @@ class DLCController extends BaseController
         $dlc_id = $args['dlc_id'];
 
         // validate ID, in this case it must be a positive number (function checks if the ID is composed of digits only)
-        $this->validateIdNum($dlc_id, $request, "dlc");
+        $this->validateIdNum($dlc_id, $request, "DLCs");
 
         $dlc = $this->dlcModel->getDLCById($dlc_id);
 
@@ -46,7 +46,7 @@ class DLCController extends BaseController
         $this->validateObj($dlc, $request, "Could not find DLC with id [{$dlc_id}]");
 
         return $this->renderJson($response, [
-            "DLC" => $dlc,
+            "dlc" => $dlc,
         ]);
     }
 }
