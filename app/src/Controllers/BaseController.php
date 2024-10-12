@@ -90,20 +90,4 @@ abstract class BaseController
             throw new HttpNotFoundException($request, $err_msg);
         }
     }
-
-    //* Validating sorting argument
-    protected function validateSortingArg($request, $params, $valid_args)
-    {
-        $valid_Order_By = ['asc', 'desc'];
-        if (isset($params['sort_by'])) {
-            if ($params['sort_by'] != $valid_args) {
-                throw new HttpInvalidSortingArgumentException($request);
-            }
-        }
-        if (isset($params['order'])) {
-            if (!in_array($params['order'], $valid_Order_By)) {
-                throw new HttpInvalidSortingArgumentException($request);
-            }
-        }
-    }
 }

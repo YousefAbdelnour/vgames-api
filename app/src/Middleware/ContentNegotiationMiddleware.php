@@ -14,7 +14,7 @@ class ContentNegotiationMiddleware implements MiddlewareInterface
     public function process(Request $request, RequestHandler $handler): ResponseInterface
     {
         $contentType = $request->getHeaderLine("Accept");
-        $acceptableContentTypes = ["application/json"];
+        $acceptableContentTypes = ["application/json", "*/*"];
 
         if (!in_array($contentType, $acceptableContentTypes)) {
             $psr17Factory = new Psr17Factory();
