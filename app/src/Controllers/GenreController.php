@@ -56,4 +56,29 @@ class GenreController extends BaseController
             "genre" => $genre,
         ]);
     }
+
+    public function handleGetGamesByGenreName(Request $request, Response $response, array $args): Response
+    {
+        $params = $request->getQueryParams();
+
+        $this->genreModel->setPaginationOptions($this->getValidatedPaginationParams($params, $request));
+
+        $this->checkIdSet($args, 'genre_name', $request);
+
+        $genre_name = $args['genre_name'];
+
+        $this->validateIdStr($genre_name, $request, "Genres");
+
+        $genre = $this->genreModel->getGenreByName($genre_name);
+
+        $this->validateObj($genre, $request, "Could not find genre [{$genre_name}]");
+
+        $games = $this->genreModel->getGamesByGenreName($genre_name);
+
+        $this->validateObj($games, $request, "Could not find games from the genre [{$genre_name}]");
+
+        return $this->renderJson($response, [
+            "genre" => $games
+        ]);
+    }
 }
