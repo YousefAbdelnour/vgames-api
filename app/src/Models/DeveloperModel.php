@@ -38,6 +38,47 @@ class DeveloperModel extends BaseModel
         return $developer;
     }
 
+    public function getGamesByDevId($dev_id)
+    {
+        $game_sql = <<<SQL
+        SELECT * 
+        FROM game 
+        WHERE Developer_Id = :developer_id
+        SQL;
+
+        $games = (array) $this->paginate($game_sql, ["developer_id" => $dev_id]);
+
+        $country_sql = <<<SQL
+        SELECT * 
+        FROM country 
+        WHERE Country_Name IN (
+            SELECT Country_Name 
+            FROM game 
+            WHERE Developer_Id = :developer_id
+        )
+        SQL;
+
+        $countries = $this->fetchAll($country_sql, ["developer_id" => $dev_id]);
+
+        $genre_sql = <<<SQL
+        SELECT * 
+        FROM genre 
+        WHERE Genre_Name IN (
+            SELECT Genre_Name 
+            FROM game 
+            WHERE Developer_Id = :developer_id
+        )
+        SQL;
+
+        $genres = $this->fetchAll($genre_sql, ["developer_id" => $dev_id]);
+        $games["country"] = $countries;
+        $games["genre"] = $genres;
+
+        return array(
+            $games,
+        );
+    }
+
     //? Filter
 
     private function filter(array $params, string &$sql, array &$query_args)
