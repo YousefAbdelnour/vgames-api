@@ -10,7 +10,7 @@ class DeveloperModel extends BaseModel
 
     public array $fields = ['dev_id', 'dev_name', 'founder', 'headquarters', 'type', 'parent', 'prog_lang', 'number_games_made', 'founded_date', 'number_of_employees'];
     public string $default_sort_field = 'Dev_Id';
-    public function __construct(PDOService $pdo)
+    public function __construct(PDOService $pdo, private GenreModel $genre_model, private CountryModel $country_model)
     {
         parent::__construct($pdo);
     }
@@ -36,6 +36,19 @@ class DeveloperModel extends BaseModel
         // Returning the single instance of the name
         $developer = $this->fetchSingle($sql, ["dev_id" => $dev_id]);
         return $developer;
+    }
+
+    public function getGamesByDevId($dev_id)
+    {
+        $game_sql = "SELECT * FROM game WHERE Developer_Id = :developer_id";
+        $games = $this->paginate($game_sql, ["developer_id" => $dev_id]);
+
+        foreach ($games["data"] as $i => $game) {
+            $games["data"][$i]["genre"] = $this->genre_model->getGenreByName($game["Genre_Name"]);
+            $games["data"][$i]["country"] = $this->country_model->getCountryByName($game["Country_Name"]);
+        }
+
+        return $games;
     }
 
     //? Filter

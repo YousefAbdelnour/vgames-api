@@ -3,6 +3,7 @@
 namespace App\Controllers;
 
 use App\Exceptions\HttpInvalidPaginationParamsException;
+use App\Models\GameModel;
 use App\Models\ReviewModel;
 use App\Validation\ValidationHelper;
 use Fig\Http\Message\StatusCodeInterface;
@@ -12,7 +13,7 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 class ReviewController extends BaseController
 {
 
-    public function __construct(private ReviewModel $review_model)
+    public function __construct(private ReviewModel $review_model, private GameModel $game_model)
     {
         parent::__construct();
     }
@@ -35,6 +36,10 @@ class ReviewController extends BaseController
     public function handleGetReviewById(Request $request, Response $response, array $args): Response
     {
         $review = $this->validateReviewId($args, $request);
+        $game = $this->game_model->getGameById($review["Game_Id"]);
+
+        unset($review["Game_Id"]);
+        $review["game"] = $game;
 
         return $this->renderJson($response, [
             "review" => $review,

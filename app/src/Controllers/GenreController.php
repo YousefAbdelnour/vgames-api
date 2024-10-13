@@ -37,6 +37,31 @@ class GenreController extends BaseController
 
     public function handleGetGenreByName(Request $request, Response $response, array $args): Response
     {
+        $genre = $this->validateGenreId($args, $request);
+
+        //render Json and send the data
+        return $this->renderJson($response, [
+            "genre" => $genre,
+        ]);
+    }
+
+    public function handleGetGamesByGenreName(Request $request, Response $response, array $args): Response
+    {
+        $genre = $this->validateGenreId($args, $request);
+
+        $params = $request->getQueryParams();
+
+        $this->genreModel->setPaginationOptions($this->getValidatedPaginationParams($params, $request));
+
+        $genre = $this->genreModel->getGamesByGenreName($genre["Genre_Name"]);
+
+        return $this->renderJson($response, [
+            "genre" => $genre
+        ]);
+    }
+
+    private function validateGenreId($args, $request)
+    {
         //check if the genre_name is set
         $this->checkIdSet($args, 'genre_name', $request);
 
@@ -49,36 +74,6 @@ class GenreController extends BaseController
 
         //if the genre doesn't exist, be transparent with the user
         $this->validateObj($genre, $request, "Could not find genre titled: [{$genre_name}]");
-
-
-        //render Json and send the data
-        return $this->renderJson($response, [
-            "genre" => $genre,
-        ]);
-    }
-
-    public function handleGetGamesByGenreName(Request $request, Response $response, array $args): Response
-    {
-        $params = $request->getQueryParams();
-
-        $this->genreModel->setPaginationOptions($this->getValidatedPaginationParams($params, $request));
-
-        $this->checkIdSet($args, 'genre_name', $request);
-
-        $genre_name = $args['genre_name'];
-
-        $this->validateIdStr($genre_name, $request, "Genres");
-
-        $genre = $this->genreModel->getGenreByName($genre_name);
-
-        $this->validateObj($genre, $request, "Could not find genre [{$genre_name}]");
-
-        $games = $this->genreModel->getGamesByGenreName($genre_name);
-
-        $this->validateObj($games, $request, "Could not find games from the genre [{$genre_name}]");
-
-        return $this->renderJson($response, [
-            "genre" => $games
-        ]);
+        return $genre;
     }
 }

@@ -35,53 +35,43 @@ class CountryModel extends BaseModel
         $result = $this->fetchSingle($sql, ["Country_Name" => $country_Name]);
 
         //* Parsing the Development_Companies field
-        $result['Development_Companies'] = explode(',', $result['Development_Companies']);
+        $result["Development_Companies"] = $result["Development_Companies"] == null ? [] :
+            explode(',', $result['Development_Companies']);
+
         return $result;
         // return $this->fetchSingle($sql, ["Country_Name" => $country_Name]);
     }
 
-    public function getGamesByCountryName($country_Name): array
+    public function getGamesByCountryName($country_Name): mixed
     {
         $country = $this->getCountryByName($country_Name);
 
         $game_sql = <<<SQL
         SELECT gm.*
-        FROM game gm
-        WHERE gm.Country_Name = :Country_Name
+            FROM game gm
+                WHERE gm.Country_Name = :Country_Name
         SQL;
 
         $games = $this->paginate($game_sql, ["Country_Name" => $country_Name]);
 
-        $dev_sql = <<<SQL
-        SELECT d.*
-        FROM developer d
-        JOIN game gm ON gm.Developer_Id = d.Dev_Id
-        WHERE gm.Country_Name = :Country_Name
-        SQL;
+        foreach ($games["data"] as $i => $game) {
+            $dev_sql = "SELECT * FROM developer WHERE Dev_Id = :dev_id";
+            $games["data"][$i]["developer"] = $this->fetchSingle($dev_sql, ["dev_id" => $game["Developer_Id"]]);
 
-        $devs = $this->fetchAll($dev_sql, ["Country_Name" => $country_Name]);
+            $sql = "SELECT * FROM genre WHERE Genre_Name = :genre_name";
+            $games["data"][$i]["genre"] = $this->fetchSingle($sql, ["genre_name" => $game["Genre_Name"]]);
+        }
 
-        $genre_sql = <<<SQL
-        SELECT g.*
-        FROM genre g
-        JOIN game gm ON gm.Genre_Name = g.Genre_Name
-        WHERE gm.Country_Name = :Country_Name
-        SQL;
+        $country["games"] = $games;
 
-        $genres = $this->fetchAll($genre_sql, ["Country_Name" => $country_Name]);
-
-        return array(
-            "country" => $country,
-            "games" => $games,
-            "developer" => $devs,
-            "genre" => $genres
-        );
+        return $country;
     }
 
     private function parseDevelopment_Companies($data)
     {
         foreach ($data as &$row) {
-            $row['Development_Companies'] = explode(',', $row["Development_Companies"]);
+            $row["Development_Companies"] = $row["Development_Companies"] == null ? [] :
+                explode(',', $row['Development_Companies']);
         }
         return $data;
     }

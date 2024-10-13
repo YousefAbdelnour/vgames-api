@@ -68,6 +68,9 @@ return static function (Slim\App $app): void {
     //* ROUTE: GET/developers/{developer_id}
     $app->get('/developers/{developer_id}', [DeveloperController::class, 'handleGetDeveloperById']);
 
+    //* ROUTE: GET/developers/{developer_id}/games
+    $app->get('/developers/{developer_id}/games', [DeveloperController::class, 'handleGetGamesByDeveloperId']);
+
     //* ROUTE: GET/dlc
     $app->get('/dlcs', [DLCController::class, 'handleGetDLCs']);
 
