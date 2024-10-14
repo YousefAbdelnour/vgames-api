@@ -11,7 +11,7 @@ class PlatformModel extends BaseModel
 
     public array $fields = ['platform_name', 'founder', 'current_owner', 'tagline', 'website', 'type', 'release_date', 'num_of_languages', 'cloud_gaming_support'];
 
-    public string $default_sort_field = 'Release_Date';
+    public string $default_sort_field = 'platform_name';
 
 
     public function __construct(PDOService $pdo)
