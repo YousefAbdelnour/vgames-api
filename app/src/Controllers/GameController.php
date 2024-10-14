@@ -50,16 +50,10 @@ class GameController extends BaseController
         $this->game_model->setPaginationOptions($this->getValidatedPaginationParams($params, $request));
 
         // get reviews for the game with given ID
-        $payload = $this->game_model->getReviewsByGameId($game);
+        $payload = $this->game_model->getReviewsByGame($game);
 
         return $this->renderJson($response, [
-            "game" => [
-                "game" => $game,
-                "developer" => $payload["developer"],
-                "genre" => $payload["genre"],
-                "country" => $payload["country"],
-                "reviews" => $payload["reviews"]
-            ],
+            "game" => $payload,
         ]);
     }
 
@@ -73,16 +67,10 @@ class GameController extends BaseController
         // returns an empty array if no pagination parameters were set
         $this->game_model->setPaginationOptions($this->getValidatedPaginationParams($params, $request));
 
-        $payload = $this->game_model->getPlatformsByGameId($game);
+        $payload = $this->game_model->getPlatformsByGame($game);
 
         return $this->renderJson($response, [
-            "game" => [
-                "game" => $game,
-                "developer" => $payload["developer"],
-                "genre" => $payload["genre"],
-                "country" => $payload["country"],
-                "platforms" => $payload["platforms"]
-            ],
+            "game" => $payload,
         ]);
     }
 

@@ -100,26 +100,30 @@ class GameModel extends BaseModel
     public function getGameById($game_id): mixed
     {
         $sql = "SELECT * FROM {$this->table_name} where game_id = :game_id";
-        return $this->fetchSingle($sql, ["game_id" => $game_id]);
+        $game = $this->fetchSingle($sql, ["game_id" => $game_id]);
+        $game_info = $this->getInfoAboutGame($game);
+
+        unset($game['Developer_Id']);
+        unset($game['Country_Name']);
+        unset($game['Genre_Name']);
+
+        $game["country"] = $game_info["country"];
+        $game["developer"] = $game_info["developer"];
+        $game["genre"] = $game_info["genre"];
+
+        return $game;
     }
 
-    public function getReviewsByGameId($game): array
+    public function getReviewsByGame($game): array
     {
-        $gameInfo = $this->getInfoAboutGame($game);
-
         $sql = "SELECT * FROM review WHERE game_id = :game_id";
 
-        $reviews = (array) $this->paginate($sql, ["game_id" => $game["Game_Id"]]);
+        $game["reviews"] = $this->paginate($sql, ["game_id" => $game["Game_Id"]]);
 
-        return [
-            "country" => $gameInfo["country"],
-            "developer" => $gameInfo["developer"],
-            "genre" => $gameInfo["genre"],
-            "reviews" => $reviews
-        ];
+        return $game;
     }
 
-    public function getPlatformsByGameId($game): array
+    public function getPlatformsByGame($game): array
     {
         $sql = <<<SQL
         SELECT * FROM platform p, platform_game pg
@@ -127,16 +131,9 @@ class GameModel extends BaseModel
                     AND pg.platform_name = p.platform_name
         SQL;
 
-        $gameInfo = $this->getInfoAboutGame($game);
+        $game["platforms"] = $this->paginate($sql, ["game_id" => $game["Game_Id"]]);
 
-        $platforms = (array) $this->paginate($sql, ["game_id" => $game["Game_Id"]]);
-
-        return [
-            "country" => $gameInfo["country"],
-            "developer" => $gameInfo["developer"],
-            "genre" => $gameInfo["genre"],
-            "platforms" => $platforms
-        ];
+        return $game;
     }
 
     private function getInfoAboutGame($game)

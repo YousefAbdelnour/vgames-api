@@ -21,7 +21,7 @@ class AboutController extends BaseController
             'version' => self::API_VERSION,
             'about' => 'Welcome! This is a Web service that provides information about video games.',
             'authors' => ["Yousef Abdelnour", "Rowan Lajoie", "Denis Voronov"],
-            'resources' => ["/games", "/reviews", "/countries", "/updates", "/genres", "/DLCs", "/developers"]
+            'resources' => ["/games", "/reviews", "/countries", "/updates", "/genres", "/DLCs", "/developers", "/platforms"]
         );
 
         return $this->renderJson($response, $data);

@@ -40,7 +40,33 @@ class DeveloperController extends BaseController
 
     public function handleGetDeveloperById(Request $request, Response $response, array $args): Response
     {
-        // check if ID is set
+        $dev = $this->validateDevId($args, $request);
+
+        //render Json and send the data
+        return $this->renderJson($response, [
+            "developer" => $dev,
+        ]);
+    }
+
+    public function handleGetGamesByDeveloperId(Request $request, Response $response, array $args): Response
+    {
+        $dev = $this->validateDevId($args, $request);
+
+        $params = $request->getQueryParams();
+
+        $this->devModel->setPaginationOptions($this->getValidatedPaginationParams($params, $request));
+
+        $games = $this->devModel->getGamesByDevId($args["developer_id"]);
+
+        $dev["games"] = $games;
+
+        return $this->renderJson($response, [
+            "developer" => $dev
+        ]);
+    }
+
+    private function validateDevId($args, $request)
+    {
         $this->checkIdSet($args, 'developer_id', $request);
 
         $dev_id = $args['developer_id'];
@@ -49,12 +75,9 @@ class DeveloperController extends BaseController
 
         $developer = $this->devModel->getDeveloperById($dev_id);
 
-        $this->validateObj($developer, $request, "Could not find game with id [{$dev_id}]");
+        $this->validateObj($developer, $request, "Could not find developer with id [{$dev_id}]");
 
-        //render Json and send the data
-        return $this->renderJson($response, [
-            "developer" => $developer,
-        ]);
+        return $developer;
     }
 
     //! POST
