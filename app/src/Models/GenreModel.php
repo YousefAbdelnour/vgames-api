@@ -12,7 +12,7 @@ class GenreModel extends BaseModel
 
     public string $default_sort_field = 'average_rating';
 
-    public function __construct(PDOService $pdo)
+    public function __construct(PDOService $pdo, private CountryModel $country_model)
     {
         parent::__construct($pdo);
     }
@@ -92,51 +92,29 @@ class GenreModel extends BaseModel
         }
     }
 
-    public function getGamesByGenreName($genre_name): array
+    public function getGamesByGenreName($genre_name): mixed
     {
         $genre = $this->getGenreByName($genre_name);
 
-        $games_query = <<<SQL
-        SELECT *
-        FROM Game
-        WHERE Genre_Name = :genre_name
-        SQL;
+        $games_query = "SELECT * FROM Game WHERE Genre_Name = :genre_name";
 
         $games = $this->paginate($games_query, ["genre_name" => $genre_name]);
 
-        $dev_query = <<<SQL
-        SELECT d.*
-        FROM Developer d
-        JOIN Game g ON g.Developer_Id = d.Dev_Id
-        WHERE g.Genre_Name = :genre_name
-        SQL;
+        foreach ($games["data"] as $i => $game) {
+            // can't inject $developer_model due to circular injection. genre and dev models would depend on each other, causing an error.
+            $dev_sql = "SELECT * FROM developer WHERE Dev_Id = :dev_id";
 
-        $devs = $this->fetchAll($dev_query, ["genre_name" => $genre_name]);
+            $developer = $this->fetchSingle($dev_sql, ["dev_id" => $game["Developer_Id"]]);
 
-        $dlc_query = <<<SQL
-        SELECT c.*
-        FROM dlc c
-        JOIN Game g ON g.game_id = c.game_id
-        WHERE g.Genre_name = :genre_name
-        SQL;
+            $games["data"][$i]["developer"] = $developer;
+            $games["data"][$i]["country"] = $this->country_model->getCountryByName($game["Country_Name"]);
 
-        $dlc = $this->fetchAll($dlc_query, ["genre_name" => $genre_name]);
+            $sql_dlc = "SELECT * FROM dlc WHERE game_id = :game_id";
+            $games["data"][$i]["DLCs"] = $this->fetchAll($sql_dlc, ["game_id" => $game["Game_Id"]]);
+        }
 
-        $country_query = <<<SQL
-        SELECT co.*
-        FROM genre ge
-        JOIN country co ON ge.Genre_Name = co.Most_Popular_Genre
-        WHERE co.Most_Popular_Genre = :genre_name
-        SQL;
+        $genre["games"] = $games;
 
-        $country = $this->fetchAll($country_query, ["genre_name" => $genre_name]);
-
-        return array(
-            "genre" => $genre,
-            "games" => $games,
-            "developers" => $devs,
-            "dlc" => $dlc,
-            "country" => $country,
-        );
+        return $genre;
     }
 }

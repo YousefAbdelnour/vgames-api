@@ -10,7 +10,7 @@ class DeveloperModel extends BaseModel
 
     public array $fields = ['dev_id', 'dev_name', 'founder', 'headquarters', 'type', 'parent', 'prog_lang', 'number_games_made', 'founded_date', 'number_of_employees'];
     public string $default_sort_field = 'Dev_Id';
-    public function __construct(PDOService $pdo)
+    public function __construct(PDOService $pdo, private GenreModel $genre_model, private CountryModel $country_model)
     {
         parent::__construct($pdo);
     }
@@ -40,43 +40,15 @@ class DeveloperModel extends BaseModel
 
     public function getGamesByDevId($dev_id)
     {
-        $game_sql = <<<SQL
-        SELECT * 
-        FROM game 
-        WHERE Developer_Id = :developer_id
-        SQL;
+        $game_sql = "SELECT * FROM game WHERE Developer_Id = :developer_id";
+        $games = $this->paginate($game_sql, ["developer_id" => $dev_id]);
 
-        $games = (array) $this->paginate($game_sql, ["developer_id" => $dev_id]);
+        foreach ($games["data"] as $i => $game) {
+            $games["data"][$i]["genre"] = $this->genre_model->getGenreByName($game["Genre_Name"]);
+            $games["data"][$i]["country"] = $this->country_model->getCountryByName($game["Country_Name"]);
+        }
 
-        $country_sql = <<<SQL
-        SELECT * 
-        FROM country 
-        WHERE Country_Name IN (
-            SELECT Country_Name 
-            FROM game 
-            WHERE Developer_Id = :developer_id
-        )
-        SQL;
-
-        $countries = $this->fetchAll($country_sql, ["developer_id" => $dev_id]);
-
-        $genre_sql = <<<SQL
-        SELECT * 
-        FROM genre 
-        WHERE Genre_Name IN (
-            SELECT Genre_Name 
-            FROM game 
-            WHERE Developer_Id = :developer_id
-        )
-        SQL;
-
-        $genres = $this->fetchAll($genre_sql, ["developer_id" => $dev_id]);
-        $games["country"] = $countries;
-        $games["genre"] = $genres;
-
-        return array(
-            $games,
-        );
+        return $games;
     }
 
     //? Filter
