@@ -10,7 +10,7 @@ class DLCModel extends BaseModel
 
     public array $fields = ['dlc_id', 'game_id', 'name', 'release_date', 'price', 'description', 'total_sales', 'sales_id', 'revenue', 'hard_copies_sold', 'digital_copies_sold', 'highest_revenue_region'];
 
-    public string $default_sort_field = 'release_date';
+    public string $default_sort_field = 'DLC_Id';
 
 
     public function __construct(PDOService $pdo)

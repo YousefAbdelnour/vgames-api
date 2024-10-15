@@ -10,7 +10,7 @@ class GenreModel extends BaseModel
 
     public array $fields = ['genre_name', 'description', 'popularity_score', 'target_audience', 'average_rating', 'average_game_length'];
 
-    public string $default_sort_field = 'average_rating';
+    public string $default_sort_field = 'genre_name';
 
     public function __construct(PDOService $pdo, private CountryModel $country_model)
     {
