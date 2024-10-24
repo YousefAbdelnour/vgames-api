@@ -136,6 +136,12 @@ class GameModel extends BaseModel
         return $game;
     }
 
+    public function insertGame(array $game): mixed
+    {
+        // returns last inserted ID
+        return $this->insert($this->table_name, $game);
+    }
+
     private function getInfoAboutGame($game)
     {
         $info["developer"] = $this->developer_model->getDeveloperById($game["Developer_Id"]);
