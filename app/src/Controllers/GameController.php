@@ -3,13 +3,14 @@
 namespace App\Controllers;
 
 use App\Models\GameModel;
+use App\Services\GamesService;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
 class GameController extends BaseController
 {
 
-    public function __construct(private GameModel $game_model)
+    public function __construct(private GameModel $game_model, private GamesService $games_service)
     {
         parent::__construct();
     }
@@ -72,6 +73,30 @@ class GameController extends BaseController
         return $this->renderJson($response, [
             "game" => $payload,
         ]);
+    }
+
+    public function handleCreateGame(Request $request, Response $response): Response
+    {
+        // get request body
+        $new_game = $request->getParsedBody();
+
+        $result = $this->games_service->createGame($new_game);
+
+        $status = $result->isSuccess() ? HTTP_CREATED : 400;
+
+        if ($result->isSuccess()) {
+            // success response
+            $payload['status'] = $status;
+            $payload['success'] = true;
+            $payload['inserted_id'] = (int) $result->getData();
+        } else {
+            $payload['status'] = $status;
+            $payload['success'] = false;
+            $payload['errors'] = $result->getData();
+        }
+
+        $payload['message'] = $result->getMessage();
+        return $this->renderJson($response, $payload, $status);
     }
 
     private function validateGameId($args, $request)

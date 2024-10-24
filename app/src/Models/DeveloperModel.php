@@ -107,6 +107,10 @@ class DeveloperModel extends BaseModel
         }
     }
 
+    public function isValidDevId($id)
+    {
+        return $this->count('SELECT * FROM developer WHERE dev_id = :dev_id', ['dev_id' => $id]) != 0;
+    }
 
 
     //! POST
