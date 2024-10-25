@@ -6,6 +6,7 @@ use App\Core\Result;
 use App\Models\GameModel;
 use App\Models\UpdateModel;
 use App\Validation\Validator;
+use DateTime;
 
 class UpdatesService
 {
@@ -23,7 +24,6 @@ class UpdatesService
         ],
         'Date' => [
             'required',
-            array('dateFormat', 'Y-m-d')
         ],
         'Description' => [
             'required',
@@ -54,6 +54,10 @@ class UpdatesService
         if (!$validator->validate()) {
             $errors = $validator->errors();
         }
+        //validating date format
+        if (!$this->isValidDate($new_update['Date'])) {
+            $errors['Date'][] = "Date must be a valid date with format 'YYYY-MM-DD'";
+        }
 
         //validate game id
         if (!$this->gameModel->isValidGameId($new_update['Game_Id'])) {
@@ -63,5 +67,11 @@ class UpdatesService
         if ($errors) return Result::fail("Invalid Update Object", $errors);
         $update_created = $this->updateModel->CreateUpdate($new_update);
         return Result::success("Update successfully created!", $update_created);
+    }
+
+    private function isValidDate($date)
+    {
+        $d = DateTime::createFromFormat('Y-m-d', $date);
+        return $d && $d->format('Y-m-d') === $date;
     }
 }
