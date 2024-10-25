@@ -118,7 +118,7 @@ class GenreModel extends BaseModel
         return $genre;
     }
 
-    public function isValidGenreName($genre_name)
+    public function isValidGenreName(string $genre_name)
     {
         return $this->count('SELECT * FROM genre WHERE genre_name = :genre_name', ['genre_name' => $genre_name]) != 0;
     }
