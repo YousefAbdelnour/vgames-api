@@ -142,11 +142,21 @@ class GameModel extends BaseModel
         return $this->insert($this->table_name, $game);
     }
 
+    public function deleteGame($game_id)
+    {
+        return $this->delete($this->table_name, ['game_id' => $game_id]);
+    }
+
     private function getInfoAboutGame($game)
     {
         $info["developer"] = $this->developer_model->getDeveloperById($game["Developer_Id"]);
         $info["country"] = $this->country_model->getCountryByName($game["Country_Name"]);
         $info["genre"] = $this->genre_model->getGenreByName($game["Genre_Name"]);
         return $info;
+    }
+
+    public function isValidGameId($id): bool
+    {
+        return $this->count("SELECT * FROM {$this->table_name} WHERE game_id = :game_id", ['game_id' => $id]) != 0;
     }
 }

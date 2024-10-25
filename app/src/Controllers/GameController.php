@@ -99,6 +99,29 @@ class GameController extends BaseController
         return $this->renderJson($response, $payload, $status);
     }
 
+    public function handleDeleteGame(Request $request, Response $response): Response
+    {
+        $body = $request->getParsedBody();
+
+        $result = $this->games_service->deleteGame($body);
+
+        $status = $result->isSuccess() ? HTTP_OK : 400;
+
+        if ($result->isSuccess()) {
+            // success response
+            $payload['status'] = $status;
+            $payload['success'] = true;
+            $payload['deleted_game'] = $result->getData();
+        } else {
+            $payload['status'] = $status;
+            $payload['success'] = false;
+            $payload['errors'] = $result->getData();
+        }
+
+        $payload['message'] = $result->getMessage();
+        return $this->renderJson($response, $payload, $status);
+    }
+
     private function validateGameId($args, $request)
     {
         // check if ID is set

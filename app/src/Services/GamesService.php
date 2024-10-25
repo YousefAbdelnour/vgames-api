@@ -24,13 +24,15 @@ class GamesService
         ],
         'Name' => [
             'required',
+            array('lengthBetween', 2, 50)
         ],
         'Founder' => [
             'required',
+            array('lengthBetween', 2, 100)
         ],
         'Release_Date' => [
             'required',
-            ['dateFormat', 'YYYY-MM-dd']
+            ['dateFormat', 'Y-m-d']
         ],
         'Country_Name' => [
             'required',
@@ -49,6 +51,13 @@ class GamesService
             'integer',
             ['min', 1]
         ],
+    );
+
+    private $delete_rules = array(
+        'id' => [
+            'required',
+            'integer',
+        ]
     );
 
     public function __construct(
@@ -102,8 +111,31 @@ class GamesService
         return Result::success('');
     }
 
-    public function deleteGame(): Result
+    public function deleteGame($body): Result
     {
-        return Result::success('');
+        $errors = [];
+
+        $validator = new Validator($body);
+
+        $validator->mapFieldsRules($this->delete_rules);
+
+        if (!$validator->validate()) {
+            // if id isn't an integer it won't check if it exists
+            $errors = $validator->errors();
+        } else if (!$this->game_model->isValidGameId($body['id'])) {
+            // if id is valid (integer), check if it exists
+            $errors['id'][] = "Could not find game with id [{$body['id']}]";
+        }
+
+        // Return fail if any errors
+        if ($errors) return Result::fail("Invalid game ID", $errors);
+
+        $game_id = $body['id'];
+        // return the deleted game object
+        $deleted_game = $this->game_model->getGameById($game_id);
+
+        $this->game_model->deleteGame($game_id);
+
+        return Result::success('Game deleted successfully.', $deleted_game);
     }
 }
