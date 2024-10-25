@@ -113,4 +113,9 @@ class CountryModel extends BaseModel
             $query_args['development_companies'] = '%' . $params['development_companies'] . '%';
         }
     }
+
+    public function isValidCountry($country)
+    {
+        return $this->count('SELECT * FROM country WHERE country_name = :country_name', ['country_name' => $country]) != 0;
+    }
 }
