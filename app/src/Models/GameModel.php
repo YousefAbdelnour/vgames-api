@@ -149,4 +149,9 @@ class GameModel extends BaseModel
         $info["genre"] = $this->genre_model->getGenreByName($game["Genre_Name"]);
         return $info;
     }
+
+    public function isValidGameId($id): bool
+    {
+        return $this->count("SELECT * FROM {$this->table_name} WHERE game_id = :game_id", ['game_id' => $id]) != 0;
+    }
 }

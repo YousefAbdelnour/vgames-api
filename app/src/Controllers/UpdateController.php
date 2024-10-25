@@ -46,31 +46,22 @@ class UpdateController extends BaseController
 
     public function handleCreateUpdate(Request $request, Response $response)
     {
-        // 1) Retrieve info about the new players to be created from the request body
         $new_update = $request->getParsedBody();
-        // dd($new_update);
         // Create the new Update
         $result = $this->updatesService->createUpdate($new_update);
         $status = $result->isSuccess() ? HTTP_CREATED : 400;
         $payload = [];
 
-        //prepare a successful response
         if ($result->isSuccess()) {
-            //status
+            //prepare a successful response
             $payload['Status'] = $status;
-            //success
             $payload['Success'] = true;
-            //inserted id
             $payload['Inserted Id'] = $result->getData();
         } else {
-            //status
             $payload['Status'] = $status;
-            //success
             $payload['Success'] = false;
-            //errors
             $payload['Errors'] = $result->getData();
         }
-        //message
         $payload['Message'] = $result->getMessage();
         return $this->renderJson($response, $payload, $status);
     }
