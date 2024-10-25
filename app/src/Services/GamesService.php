@@ -118,31 +118,32 @@ class GamesService
 
         if (!$validator->validate()) {
             $errors = $validator->errors();
-        }
+        } else {
 
-        // Validate PK (game_id)
-        if (isset($game['Game_Id']) && !$this->game_model->isValidGameId($game['Game_Id'])) {
-            $errors['Developer_Id'][] = "Could not find developer with id [{$game['Developer_Id']}]";
-        };
+            // Validate PK (game_id)
+            if (isset($game['Game_Id']) && !$this->game_model->isValidGameId($game['Game_Id'])) {
+                $errors['Developer_Id'][] = "Could not find developer with id [{$game['Developer_Id']}]";
+            };
 
-        // Validating FKs
-        if (isset($game['Developer_Id']) && !$this->developer_model->isValidDevId($game['Developer_Id'])) {
-            $errors['Developer_Id'][] = "Could not find developer with id [{$game['Developer_Id']}]";
-        };
+            // Validating FKs
+            if (isset($game['Developer_Id']) && !$this->developer_model->isValidDevId($game['Developer_Id'])) {
+                $errors['Developer_Id'][] = "Could not find developer with id [{$game['Developer_Id']}]";
+            };
 
-        if (isset($game['Genre_Name']) && !$this->genre_model->isValidGenreName($game['Genre_Name'])) {
-            $errors['Genre_Name'][] = "Could not find genre titled: [{$game['Genre_Name']}]";
-        }
+            if (isset($game['Genre_Name']) && !$this->genre_model->isValidGenreName($game['Genre_Name'])) {
+                $errors['Genre_Name'][] = "Could not find genre titled: [{$game['Genre_Name']}]";
+            }
 
-        if (isset($game['Country_Name']) && !$this->country_model->isValidCountry($game['Country_Name'])) {
-            $errors['Country_Name'][] = "Could not find country named [{$game['Country_Name']}]";
-        }
+            if (isset($game['Country_Name']) && !$this->country_model->isValidCountry($game['Country_Name'])) {
+                $errors['Country_Name'][] = "Could not find country named [{$game['Country_Name']}]";
+            }
 
-        // Validate ESRB
-        $game['ESRB'] = strtoupper($game['ESRB']);
-        if (!in_array($game['ESRB'], $this->valid_esrb_ratings)) {
-            $esrb_join = implode(", ", $this->valid_esrb_ratings);
-            $errors['ESRB'][] = "Invalid ESRB rating. Accepted ratings: {$esrb_join}";
+            // Validate ESRB
+            $game['ESRB'] = strtoupper($game['ESRB']);
+            if (!in_array($game['ESRB'], $this->valid_esrb_ratings)) {
+                $esrb_join = implode(", ", $this->valid_esrb_ratings);
+                $errors['ESRB'][] = "Invalid ESRB rating. Accepted ratings: {$esrb_join}";
+            }
         }
 
         // Return fail if any errors
