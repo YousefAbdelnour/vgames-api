@@ -24,9 +24,11 @@ class GamesService
         ],
         'Name' => [
             'required',
+            array('lengthBetween', 2, 50)
         ],
         'Founder' => [
             'required',
+            array('lengthBetween', 2, 100)
         ],
         'Release_Date' => [
             'required',
