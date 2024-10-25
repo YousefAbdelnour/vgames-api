@@ -14,7 +14,6 @@ class GamesService
 {
     private $valid_esrb_ratings = ['E', 'E10+', 'T', 'M', 'AO', 'RP'];
 
-    //! ['min', 0] doesn't work will ask teacher
     private $rules = array(
         'Developer_Id' => [
             'required',
@@ -31,7 +30,7 @@ class GamesService
         ],
         'Release_Date' => [
             'required',
-            ['dateFormat', 'Y-m-d']
+            ['dateFormat', 'YYYY-MM-dd']
         ],
         'Country_Name' => [
             'required',
@@ -43,10 +42,12 @@ class GamesService
         'Price' => [
             'required',
             'numeric',
+            ['min', 0]
         ],
         'Number_Of_Players' => [
             'required',
             'integer',
+            ['min', 1]
         ],
     );
 
@@ -80,16 +81,6 @@ class GamesService
 
         if (!$this->country_model->isValidCountry($game['Country_Name'])) {
             $errors['Country_Name'][] = "Could not find country named [{$game['Country_Name']}]";
-        }
-
-        // For regex, Valitron supports ['regex', '/^[1-9]\d*/'], but we want to have specific error messages.
-
-        if (!preg_match('/^[1-9]\d*/', $game['Number_Of_Players'])) {
-            $errors['Number_Of_Players'][] = "Number of players must be at least 1";
-        }
-
-        if (!preg_match('/^\d/', $game['Price'])) {
-            $errors['Price'][] = "Price must be at least 0.00";
         }
 
         // Validate ESRB
