@@ -99,6 +99,30 @@ class GameController extends BaseController
         return $this->renderJson($response, $payload, $status);
     }
 
+    public function handleUpdateGame(Request $request, Response $response): Response
+    {
+        // get request body
+        $new_game = $request->getParsedBody();
+
+        $result = $this->games_service->updateGame($new_game);
+
+        $status = $result->isSuccess() ? HTTP_OK : 400;
+
+        if ($result->isSuccess()) {
+            // success response
+            $payload['status'] = $status;
+            $payload['success'] = true;
+            $payload['updated_game'] = $result->getData();
+        } else {
+            $payload['status'] = $status;
+            $payload['success'] = false;
+            $payload['errors'] = $result->getData();
+        }
+
+        $payload['message'] = $result->getMessage();
+        return $this->renderJson($response, $payload, $status);
+    }
+
     private function validateGameId($args, $request)
     {
         // check if ID is set
