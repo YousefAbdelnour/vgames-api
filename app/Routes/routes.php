@@ -53,6 +53,9 @@ return static function (Slim\App $app): void {
     //* ROUTE: GET/updates/{update_id}
     $app->get('/updates/{update_id}', [UpdateController::class, 'handleGetUpdateById']);
 
+    //! ROUTE: POST/updates
+    $app->post('/updates', [UpdateController::class, 'handleCreateUpdate']);
+
     //* ROUTE: GET/genres
     $app->get('/genres', [GenreController::class, 'handleGetGenres']);
 
