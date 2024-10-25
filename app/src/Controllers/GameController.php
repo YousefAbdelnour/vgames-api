@@ -88,7 +88,7 @@ class GameController extends BaseController
             // success response
             $payload['status'] = $status;
             $payload['success'] = true;
-            $payload['inserted_id'] = (int) $result->getData();
+            $payload['inserted_game'] = $result->getData();
         } else {
             $payload['status'] = $status;
             $payload['success'] = false;
