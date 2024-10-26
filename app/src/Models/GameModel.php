@@ -136,10 +136,15 @@ class GameModel extends BaseModel
         return $game;
     }
 
-    public function insertGame(array $game): mixed
+    public function insertGame($game): mixed
     {
         // returns last inserted ID
         return $this->insert($this->table_name, $game);
+    }
+
+    public function updateGame($game)
+    {
+        return $this->update($this->table_name, $game, ['game_id' => $game['Game_Id']]);
     }
 
     private function getInfoAboutGame($game)
@@ -148,5 +153,10 @@ class GameModel extends BaseModel
         $info["country"] = $this->country_model->getCountryByName($game["Country_Name"]);
         $info["genre"] = $this->genre_model->getGenreByName($game["Genre_Name"]);
         return $info;
+    }
+
+    public function isValidGameId($id): bool
+    {
+        return $this->count("SELECT * FROM {$this->table_name} WHERE game_id = :game_id", ['game_id' => $id]) != 0;
     }
 }
