@@ -114,8 +114,8 @@ class CountryModel extends BaseModel
         }
     }
 
-    public function isValidCountry($country)
+    public function isValidCountry($country_name)
     {
-        return $this->count('SELECT * FROM country WHERE country_name = :country_name', ['country_name' => $country]) != 0;
+        return $this->count('SELECT * FROM country WHERE country_name = :country_name', ['country_name' => $country_name]) != 0;
     }
 }

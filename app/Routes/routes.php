@@ -47,6 +47,9 @@ return static function (Slim\App $app): void {
     //! ROUTE: POST/games
     $app->post('/games', [GameController::class, 'handleCreateGame']);
 
+    //! ROUTE: PUT/games
+    $app->put('/games', [GameController::class, 'handleUpdateGame']);
+
     //* ROUTE: GET/games/{game_id}/platforms
     $app->get('/games/{game_id}/platforms', [GameController::class, 'handleGetPlatformsByGameId']);
 
