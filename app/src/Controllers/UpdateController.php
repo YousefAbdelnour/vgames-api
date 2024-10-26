@@ -54,15 +54,15 @@ class UpdateController extends BaseController
 
         if ($result->isSuccess()) {
             //prepare a successful response
-            $payload['Status'] = $status;
-            $payload['Success'] = true;
-            $payload['Inserted Id'] = $result->getData();
+            $payload['status'] = $status;
+            $payload['success'] = true;
+            $payload['inserted_id'] = $result->getData();
         } else {
-            $payload['Status'] = $status;
-            $payload['Success'] = false;
-            $payload['Errors'] = $result->getData();
+            $payload['status'] = $status;
+            $payload['success'] = false;
+            $payload['errors'] = $result->getData();
         }
-        $payload['Message'] = $result->getMessage();
+        $payload['message'] = $result->getMessage();
         return $this->renderJson($response, $payload, $status);
     }
 }
