@@ -99,14 +99,14 @@ class GamesService
 
         if (!$validator->validate()) {
             $errors = $validator->errors();
-        } else {
-            // Validate PK (game_id)
-            if (isset($game['Game_Id']) && !$this->game_model->isValidGameId($game['Game_Id'])) {
-                $errors['Developer_Id'][] = "Could not find developer with id [{$game['Developer_Id']}]";
-            };
-
-            $this->validateGameBody($game, $errors);
         }
+
+        // Validate PK (game_id)
+        if (isset($game['Game_Id']) && !$this->game_model->isValidGameId($game['Game_Id'])) {
+            $errors['Game_Id'][] = "Could not find game with id [{$game['Game_Id']}]";
+        };
+
+        $this->validateGameBody($game, $errors);
 
         // Return fail if any errors
         if ($errors) return Result::fail("Invalid game object", $errors);
