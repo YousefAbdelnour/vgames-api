@@ -65,4 +65,29 @@ class UpdateController extends BaseController
         $payload['message'] = $result->getMessage();
         return $this->renderJson($response, $payload, $status);
     }
+
+    public function handleDeleteUpdate(Request $request, Response $response)
+    {
+        $body = $request->getParsedBody();
+
+        // Delete update
+        $result = $this->updatesService->deleteUpdate($body);
+
+        $status = $result->isSuccess() ? HTTP_OK : 400;
+
+        $payload = [];
+
+        if ($result->isSuccess()) {
+            //prepare a successful response
+            $payload['status'] = $status;
+            $payload['success'] = true;
+            $payload['inserted_id'] = $result->getData();
+        } else {
+            $payload['status'] = $status;
+            $payload['success'] = false;
+            $payload['errors'] = $result->getData();
+        }
+        $payload['message'] = $result->getMessage();
+        return $this->renderJson($response, $payload, $status);
+    }
 }

@@ -43,6 +43,12 @@ class UpdatesService
             array('lengthMax', 5000)
         ],
     );
+    private $delete_rules = array(
+        'id' => [
+            'required',
+            'integer'
+        ]
+    );
 
     public function __construct(private UpdateModel $updateModel, private GameModel $gameModel) {}
 
@@ -67,6 +73,26 @@ class UpdatesService
         if ($errors) return Result::fail("Invalid Update Object", $errors);
         $update_created = $this->updateModel->CreateUpdate($new_update);
         return Result::success("Update successfully created!", $update_created);
+    }
+
+    public function deleteUpdate($update): Result
+    {
+        $errors = [];
+        $validator = new Validator($update);
+        $validator->mapFieldsRules($this->delete_rules);
+        if (!$validator->validate()) {
+            $errors = $validator->errors();
+        }
+        if (!$this->updateModel->isValidUpdateId($update['id'])) {
+            $errors['id'][] = "Could not find Update with id [{$update['id']}]";
+        }
+        if ($errors) return Result::fail("Invalid Update Id", $errors);
+        $update_id = $update['id'];
+        $deleted_update = $this->updateModel->getUpdateById($update_id);
+
+        $this->updateModel->deleteUpdate($update_id);
+
+        return Result::success('Update deleted successfully.', $deleted_update);
     }
 
     private function isValidDate($date)
