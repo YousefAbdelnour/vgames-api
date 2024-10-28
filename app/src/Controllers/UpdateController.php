@@ -81,7 +81,7 @@ class UpdateController extends BaseController
             //prepare a successful response
             $payload['status'] = $status;
             $payload['success'] = true;
-            $payload['inserted_id'] = $result->getData();
+            $payload['deleted_id'] = $result->getData();
         } else {
             $payload['status'] = $status;
             $payload['success'] = false;
