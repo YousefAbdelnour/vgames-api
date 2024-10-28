@@ -54,6 +54,11 @@ class UpdateModel extends BaseModel
         return $this->delete($this->table_name, ['update_id' => $update_id]);
     }
 
+    public function updateUpdate($update)
+    {
+        return $this->update($this->table_name, $update, ['Update_Id' => $update['Update_Id']]);
+    }
+
     public static function parseNewFeatures($data)
     {
         foreach ($data as &$row) {
