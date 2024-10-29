@@ -35,6 +35,7 @@ class DeveloperModel extends BaseModel
 
         // Returning the single instance of the name
         $developer = $this->fetchSingle($sql, ["dev_id" => $dev_id]);
+        // if ($developer == false) return false;
         return $developer;
     }
 

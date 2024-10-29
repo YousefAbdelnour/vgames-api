@@ -38,7 +38,7 @@ class UpdateModel extends BaseModel
         $query_args = [];
         $sql = "SELECT * FROM {$this->table_name} WHERE update_id = :update_id";
         $result = $this->fetchSingle($sql, ["update_id" => $update_id]);
-
+        if ($result == false) return false;
         //* Parsing the New Features Column
         $result['New_Features'] = explode(',', $result["New_Features"]);
         return $result;

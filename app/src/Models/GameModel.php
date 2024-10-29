@@ -101,6 +101,7 @@ class GameModel extends BaseModel
     {
         $sql = "SELECT * FROM {$this->table_name} where game_id = :game_id";
         $game = $this->fetchSingle($sql, ["game_id" => $game_id]);
+        if ($game == false) return false;
         $game_info = $this->getInfoAboutGame($game);
 
         unset($game['Developer_Id']);
