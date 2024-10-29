@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Oct 12, 2024 at 06:46 PM
+-- Generation Time: Oct 25, 2024 at 05:02 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -146,7 +146,6 @@ INSERT INTO `game` (`Game_Id`, `Developer_Id`, `Genre_Name`, `Name`, `Founder`, 
 
 CREATE TABLE `game_update` (
   `Update_Id` int(11) NOT NULL,
-  `Update_type` int(11) NOT NULL,
   `Limited_Time_Event` tinyint(4) NOT NULL,
   `Game_Id` int(11) NOT NULL,
   `Date` date NOT NULL,
@@ -160,10 +159,10 @@ CREATE TABLE `game_update` (
 -- Dumping data for table `game_update`
 --
 
-INSERT INTO `game_update` (`Update_Id`, `Update_type`, `Limited_Time_Event`, `Game_Id`, `Date`, `Description`, `Version_Number`, `Update_Size`, `New_Features`) VALUES
-(1, 1, 0, 1, '2018-12-20', 'Bug fixes and performance improvements.', '1.01', 1.5, 'Improved AI, Better performance'),
-(2, 2, 1, 2, '2007-10-10', 'Added multiplayer mode.', '2.0', 2, 'Multiplayer mode, New maps'),
-(3, 1, 0, 3, '2017-08-15', 'New expansion content.', '1.22', 4.5, 'New quests, new regions');
+INSERT INTO `game_update` (`Update_Id`, `Limited_Time_Event`, `Game_Id`, `Date`, `Description`, `Version_Number`, `Update_Size`, `New_Features`) VALUES
+(1, 0, 1, '2018-12-20', 'Bug fixes and performance improvements.', '1.01', 1.5, 'Improved AI, Better performance'),
+(2, 1, 2, '2007-10-10', 'Added multiplayer mode.', '2.0', 2, 'Multiplayer mode, New maps'),
+(3, 0, 3, '2017-08-15', 'New expansion content.', '1.22', 4.5, 'New quests, new regions');
 
 -- --------------------------------------------------------
 
@@ -337,6 +336,12 @@ ALTER TABLE `review`
 --
 
 --
+-- AUTO_INCREMENT for table `developer`
+--
+ALTER TABLE `developer`
+  MODIFY `Dev_Id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+
+--
 -- AUTO_INCREMENT for table `dlc`
 --
 ALTER TABLE `dlc`
@@ -347,6 +352,18 @@ ALTER TABLE `dlc`
 --
 ALTER TABLE `game`
   MODIFY `Game_Id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+
+--
+-- AUTO_INCREMENT for table `game_update`
+--
+ALTER TABLE `game_update`
+  MODIFY `Update_Id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
+-- AUTO_INCREMENT for table `review`
+--
+ALTER TABLE `review`
+  MODIFY `Review_Id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- Constraints for dumped tables

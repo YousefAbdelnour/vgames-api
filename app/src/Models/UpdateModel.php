@@ -44,6 +44,11 @@ class UpdateModel extends BaseModel
         return $result;
     }
 
+    public function createUpdate(array $new_updates)
+    {
+        return $this->insert($this->table_name, $new_updates);
+    }
+
     public static function parseNewFeatures($data)
     {
         foreach ($data as &$row) {

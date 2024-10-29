@@ -3,13 +3,14 @@
 namespace App\Controllers;
 
 use App\Models\UpdateModel;
+use App\Services\UpdatesService;
 use Fig\Http\Message\StatusCodeInterface;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
 class UpdateController extends BaseController
 {
-    public function __construct(private UpdateModel $update_model)
+    public function __construct(private UpdateModel $update_model, private UpdatesService $updatesService)
     {
         parent::__construct();
     }
@@ -41,5 +42,27 @@ class UpdateController extends BaseController
         return $this->renderJson($response, [
             "update" => $update
         ]);
+    }
+
+    public function handleCreateUpdate(Request $request, Response $response)
+    {
+        $new_update = $request->getParsedBody();
+        // Create the new Update
+        $result = $this->updatesService->createUpdate($new_update);
+        $status = $result->isSuccess() ? HTTP_CREATED : 400;
+        $payload = [];
+
+        if ($result->isSuccess()) {
+            //prepare a successful response
+            $payload['status'] = $status;
+            $payload['success'] = true;
+            $payload['inserted_id'] = $result->getData();
+        } else {
+            $payload['status'] = $status;
+            $payload['success'] = false;
+            $payload['errors'] = $result->getData();
+        }
+        $payload['message'] = $result->getMessage();
+        return $this->renderJson($response, $payload, $status);
     }
 }
