@@ -82,8 +82,7 @@ class UpdatesService
         $validator->mapFieldsRules($this->delete_rules);
         if (!$validator->validate()) {
             $errors = $validator->errors();
-        }
-        if (!$this->updateModel->isValidUpdateId($update['id'])) {
+        } else if (!$this->updateModel->isValidUpdateId($update['id'])) {
             $errors['id'][] = "Could not find Update with id [{$update['id']}]";
         }
         if ($errors) return Result::fail("Invalid Update Id", $errors);

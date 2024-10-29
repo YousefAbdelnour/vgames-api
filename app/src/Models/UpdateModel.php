@@ -44,9 +44,9 @@ class UpdateModel extends BaseModel
         return $result;
     }
 
-    public function createUpdate(array $new_updates)
+    public function createUpdate($new_update)
     {
-        return $this->insert($this->table_name, $new_updates);
+        return $this->insert($this->table_name, $new_update);
     }
 
     public function deleteUpdate($update_id)
@@ -56,7 +56,7 @@ class UpdateModel extends BaseModel
 
     public function updateUpdate($update)
     {
-        return $this->update($this->table_name, $update, ['Update_Id' => $update['Update_Id']]);
+        return $this->update($this->table_name, $update, ['update_id' => $update['Update_Id']]);
     }
 
     public static function parseNewFeatures($data)
