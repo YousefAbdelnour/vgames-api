@@ -56,7 +56,53 @@ class UpdateController extends BaseController
             //prepare a successful response
             $payload['status'] = $status;
             $payload['success'] = true;
-            $payload['inserted_id'] = $result->getData();
+            $payload['inserted_update'] = $result->getData();
+        } else {
+            $payload['status'] = $status;
+            $payload['success'] = false;
+            $payload['errors'] = $result->getData();
+        }
+        $payload['message'] = $result->getMessage();
+        return $this->renderJson($response, $payload, $status);
+    }
+
+    public function handleDeleteUpdate(Request $request, Response $response)
+    {
+        $body = $request->getParsedBody();
+
+        // Delete update
+        $result = $this->updatesService->deleteUpdate($body);
+
+        $status = $result->isSuccess() ? HTTP_OK : 400;
+
+        $payload = [];
+
+        if ($result->isSuccess()) {
+            //prepare a successful response
+            $payload['status'] = $status;
+            $payload['success'] = true;
+            $payload['deleted_update'] = $result->getData();
+        } else {
+            $payload['status'] = $status;
+            $payload['success'] = false;
+            $payload['errors'] = $result->getData();
+        }
+        $payload['message'] = $result->getMessage();
+        return $this->renderJson($response, $payload, $status);
+    }
+
+    public function handleUpdateUpdate(Request $request, Response $response){
+        $new_update = $request->getParsedBody();
+        // Update the Update
+        $result = $this->updatesService->updateUpdate($new_update);
+        $status = $result->isSuccess() ? HTTP_OK : 400;
+        $payload = [];
+
+        if ($result->isSuccess()) {
+            //prepare a successful response
+            $payload['status'] = $status;
+            $payload['success'] = true;
+            $payload['updated_update'] = $result->getData();
         } else {
             $payload['status'] = $status;
             $payload['success'] = false;

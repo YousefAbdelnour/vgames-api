@@ -44,9 +44,19 @@ class UpdateModel extends BaseModel
         return $result;
     }
 
-    public function createUpdate(array $new_updates)
+    public function createUpdate($new_update)
     {
-        return $this->insert($this->table_name, $new_updates);
+        return $this->insert($this->table_name, $new_update);
+    }
+
+    public function deleteUpdate($update_id)
+    {
+        return $this->delete($this->table_name, ['update_id' => $update_id]);
+    }
+
+    public function updateUpdate($update)
+    {
+        return $this->update($this->table_name, $update, ['update_id' => $update['Update_Id']]);
     }
 
     public static function parseNewFeatures($data)
@@ -94,5 +104,10 @@ class UpdateModel extends BaseModel
             $sql .= ' AND Version_Number LIKE CONCAT(:version_number, "%")';
             $query_args['version_number'] = $params['version_number'];
         }
+    }
+
+    public function isValidUpdateId($id): bool
+    {
+        return $this->count("SELECT * FROM {$this->table_name} WHERE Update_Id = :Update_Id", ['Update_Id' => $id]) != 0;
     }
 }
