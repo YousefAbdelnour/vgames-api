@@ -5,7 +5,7 @@ namespace App\Services;
 use App\Core\Result;
 use App\Models\DeveloperModel;
 
-class DevelopersService
+class DevelopersService extends BaseService
 {
 
     //TODO: Declare the validation rules for the collection resource

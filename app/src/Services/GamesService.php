@@ -10,7 +10,7 @@ use App\Models\DeveloperModel;
 use App\Models\GameModel;
 use App\Models\GenreModel;
 
-class GamesService
+class GamesService extends BaseService
 {
     private $valid_esrb_ratings = ['E', 'E10+', 'T', 'M', 'AO', 'RP'];
 
@@ -32,7 +32,6 @@ class GamesService
         ],
         'Release_Date' => [
             'required',
-            ['dateFormat', 'Y-m-d']
         ],
         'Country_Name' => [
             'required',
@@ -158,6 +157,10 @@ class GamesService
         if (isset($game['Developer_Id']) && !$this->developer_model->isValidDevId($game['Developer_Id'])) {
             $errors['Developer_Id'][] = "Could not find developer with id [{$game['Developer_Id']}]";
         };
+
+        if (isset($game['Release_Date']) && !$this->isValidDate($game['Release_Date'])) {
+            $errors['Release_Date'][] = "Date must be a valid date with format 'YYYY-MM-DD'";
+        }
 
         if (isset($game['Genre_Name']) && !$this->genre_model->isValidGenreName($game['Genre_Name'])) {
             $errors['Genre_Name'][] = "Could not find genre titled: [{$game['Genre_Name']}]";
