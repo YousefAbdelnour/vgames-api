@@ -9,13 +9,7 @@ use App\Models\DeveloperModel;
 
 class DevelopersService extends BaseService
 {
-
     public $rules = array(
-        'Dev_Id' => [
-            'required',
-            'integer',
-            array('min', 0)
-        ],
         'Dev_Name' => [
             'required',
             array('lengthMax', 255)
@@ -110,8 +104,6 @@ class DevelopersService extends BaseService
         $dev_id = $deleted_dev['id'];
 
         $deleted_developer = $this->developerModel->getDeveloperById($dev_id);
-
-
 
         if ($errors) {
             return Result::fail("Invalid Developer Object", $errors);
