@@ -65,8 +65,11 @@ class DevelopersService extends BaseService
         }
         if ($errors) return Result::fail("Invalid Developer Object", $errors);
         //* Creating Developer_Id
+
         $created_id = $this->developerModel->CreateDeveloper($new_dev);
+
         $developer_created = $this->developerModel->getDeveloperById($created_id);
+
         return Result::success("Developer successfully created!", $developer_created);
     }
 
@@ -86,10 +89,10 @@ class DevelopersService extends BaseService
         $validator = new Validator($dev_updated);
 
         $validator->mapFieldsRules($extra_rules);
-
-        if (!$validator->validate()) {
+        if (!$validator->validate() && !$errors) {
             $errors = $validator->errors();
         }
+
 
         if (isset($dev_updated['Dev_Id']) && !$this->developerModel->isValidDevId($dev_updated['Dev_Id'])) {
             $errors['Dev_Id'][] = "Could not find developer with id [{$dev_updated['Dev_Id']}]";
@@ -98,6 +101,8 @@ class DevelopersService extends BaseService
         if (isset($dev_updated['Founded_Date']) && !$this->isValidDate($dev_updated['Founded_Date'])) {
             $errors['Founded_Date'][] = "Date must be a valid date with format 'YYYY-MM-DD'";
         }
+
+
 
         if ($errors) return Result::fail("Invalid Developer Object", $errors);
         $this->developerModel->updateDeveloper($dev_updated);
