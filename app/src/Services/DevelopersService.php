@@ -55,11 +55,12 @@ class DevelopersService extends BaseService
 
         $validator = new Validator($new_dev);
 
-        $validator->mapFieldsRules($this->rules);
+        $validator->mapFieldsRules(rules: $this->rules);
 
         if (!$validator->validate()) {
             $errors = $validator->errors();
         }
+
         if (isset($new_dev['Founded_Date']) && !$this->isValidDate($new_dev['Founded_Date'])) {
             $errors['Founded_Date'][] = "Date must be a valid date with format 'YYYY-MM-DD'";
         }
@@ -111,25 +112,37 @@ class DevelopersService extends BaseService
         return Result::success("Developer updated successfully.", $updated_dev);
     }
 
-
     public function deleteDeveloper($deleted_dev): Result
     {
+        $better_rules = [
+            'id' => [
+                'required',
+                'integer'
+            ]
+        ];
+
         $errors = [];
         $validator = new Validator($deleted_dev);
 
+        $validator->mapFieldsRules(rules: $better_rules);
+
+        // Validate and collect errors
+        if (!$validator->validate()) {
+            $errors = $validator->errors();
+        }
+
         if (isset($deleted_dev['id']) && !$this->developerModel->isValidDevId($deleted_dev['id'])) {
             $errors['id'][] = "Could not find developer with id [{$deleted_dev['id']}]";
-        };
-
-        $dev_id = $deleted_dev['id'];
-
-        $deleted_developer = $this->developerModel->getDeveloperById($dev_id);
+        }
 
         if ($errors) {
-            return Result::fail("Invalid Developer Object", $errors);
-        } else {
-            $this->developerModel->deleteDeveloper($dev_id);
-            return Result::success('Developer deleted successfully.', $deleted_developer);
-        };
+            return Result::fail("Invalid Developer Id", $errors);
+        }
+
+        $dev_id = $deleted_dev['id'];
+        $deleted_developer = $this->developerModel->getDeveloperById($dev_id);
+
+        $this->developerModel->deleteDeveloper($dev_id);
+        return Result::success('Developer deleted successfully.', $deleted_developer);
     }
 }
