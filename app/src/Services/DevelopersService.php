@@ -73,17 +73,32 @@ class DevelopersService extends BaseService
 
     public function updateDeveloper($dev_updated): Result
     {
+
+        $extra_rules = array_merge(
+            array('Dev_Id' => [
+                'required',
+                'integer'
+            ]),
+            $this->rules
+        );
+
         $errors = [];
         $validator = new Validator($dev_updated);
-        $validator->mapFieldsRules($this->rules);
+
+        $validator->mapFieldsRules($extra_rules);
 
         if (!$validator->validate()) {
             $errors = $validator->errors();
         }
 
+        if (isset($dev_updated['Dev_Id']) && !$this->developerModel->isValidDevId($dev_updated['Dev_Id'])) {
+            $errors['Dev_Id'][] = "Could not find developer with id [{$dev_updated['Dev_Id']}]";
+        }
+
         if (isset($dev_updated['Founded_Date']) && !$this->isValidDate($dev_updated['Founded_Date'])) {
             $errors['Founded_Date'][] = "Date must be a valid date with format 'YYYY-MM-DD'";
         }
+
         if ($errors) return Result::fail("Invalid Developer Object", $errors);
         $this->developerModel->updateDeveloper($dev_updated);
         $updated_dev = $this->developerModel->getDeveloperById($dev_updated['Dev_Id']);
