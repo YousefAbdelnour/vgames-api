@@ -84,8 +84,10 @@ class DeveloperController extends BaseController
     {
         $new_dev = $request->getParsedBody();
         $result = $this->developersService->createDeveloper($new_dev);
+
         $status = $result->isSuccess() ? HTTP_CREATED : 400;
         $payload = [];
+
 
         if ($result->isSuccess()) {
             $payload['status'] = $status;
