@@ -74,7 +74,7 @@ class UpdateController extends BaseController
         $body = $request->getParsedBody();
 
         // Delete update
-        $result = $this->updatesService->deleteUpdate($body);
+        $result = $this->updatesService->deleteUpdate($request, $body);
 
         $status = $result->isSuccess() ? HTTP_OK : 400;
 
