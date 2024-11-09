@@ -10,7 +10,7 @@ use DateTime;
 use Psr\Http\Message\RequestInterface as Request;
 use Slim\Exception\HttpBadRequestException;
 
-class UpdatesService
+class UpdatesService extends BaseService
 {
     private $rules = array(
         'Limited_Time_Event' => [
@@ -63,12 +63,12 @@ class UpdatesService
             $errors = $validator->errors();
         }
         //validating date format
-        if (!$this->isValidDate($new_update['Date'])) {
+        if (isset($new_update['Date']) && !$this->isValidDate($new_update['Date'])) {
             $errors['Date'][] = "Date must be a valid date with format 'YYYY-MM-DD'";
         }
 
         //validate game id
-        if (!$this->gameModel->isValidGameId($new_update['Game_Id'])) {
+        if (isset($new_update['Game_Id']) && !$this->gameModel->isValidGameId($new_update['Game_Id'])) {
             $errors['Game_Id'][] = "Could not find Game with Id [{$new_update['Game_Id']}]";
         }
 
@@ -116,16 +116,16 @@ class UpdatesService
         if (!$validator->validate()) {
             $errors = $validator->errors();
         }
-        if (!$this->updateModel->isValidUpdateId($new_update['Update_Id'])) {
+        if (isset($new_update['Update_Id']) && !$this->updateModel->isValidUpdateId($new_update['Update_Id'])) {
             $errors['Update_Id'][] = "Could not find Update with id [{$new_update['Update_Id']}]";
         }
         //validating date format
-        if (!$this->isValidDate($new_update['Date'])) {
+        if (isset($new_update['Date']) && !$this->isValidDate($new_update['Date'])) {
             $errors['Date'][] = "Date must be a valid date with format 'YYYY-MM-DD'";
         }
 
         //validate game id
-        if (!$this->gameModel->isValidGameId($new_update['Game_Id'])) {
+        if (isset($new_update['Game_Id']) && !$this->gameModel->isValidGameId($new_update['Game_Id'])) {
             $errors['Game_Id'][] = "Could not find Game with Id [{$new_update['Game_Id']}]";
         }
         if ($errors) return Result::fail("Invalid Update Object", $errors);
@@ -133,11 +133,5 @@ class UpdatesService
         $updated_update = $this->updateModel->getUpdateById($new_update['Update_Id']);
 
         return Result::success('Update updated successfully.', $updated_update);
-    }
-
-    private function isValidDate($date)
-    {
-        $d = DateTime::createFromFormat('Y-m-d', $date);
-        return $d && $d->format('Y-m-d') === $date;
     }
 }

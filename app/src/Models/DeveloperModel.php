@@ -51,6 +51,28 @@ class DeveloperModel extends BaseModel
         return $games;
     }
 
+
+    public function isValidDevId($id)
+    {
+        return $this->count('SELECT * FROM developer WHERE dev_id = :dev_id', ['dev_id' => $id]) != 0;
+    }
+
+
+    public function createDeveloper($new_dev)
+    {
+        return $this->insert($this->table_name, $new_dev);
+    }
+
+    public function deleteDeveloper($dev_id)
+    {
+        return $this->delete($this->table_name, ['dev_id' => $dev_id]);
+    }
+
+    public function updateDeveloper($developer)
+    {
+        return $this->update($this->table_name, $developer, ['dev_id' => $developer['Dev_Id']]);
+    }
+
     //? Filter
 
     private function filter(array $params, string &$sql, array &$query_args)
@@ -106,18 +128,4 @@ class DeveloperModel extends BaseModel
             $query_args['founded_date'] = $params['founded_date'];
         }
     }
-
-    public function isValidDevId($id)
-    {
-        return $this->count('SELECT * FROM developer WHERE dev_id = :dev_id', ['dev_id' => $id]) != 0;
-    }
-
-
-    //! POST
-    // public function insertDeveloper(array $newDev): mixed
-    // {
-    //     //$sql = "INSERT INTO {$this->table_name} VALUES ()";
-    //     $last_id = $this->insert($this->table_name, $newDev);
-    //     return $last_id;
-    // }
 }

@@ -47,6 +47,9 @@ return static function (Slim\App $app): void {
     //! ROUTE: POST/games
     $app->post('/games', [GameController::class, 'handleCreateGame']);
 
+    //! ROUTE: DELETE/games
+    $app->delete('/games', [GameController::class, 'handleDeleteGame']);
+
     //! ROUTE: PUT/games
     $app->put('/games', [GameController::class, 'handleUpdateGame']);
 
@@ -85,6 +88,15 @@ return static function (Slim\App $app): void {
 
     //* ROUTE: GET/developers/{developer_id}/games
     $app->get('/developers/{developer_id}/games', [DeveloperController::class, 'handleGetGamesByDeveloperId']);
+
+    //! ROUTE: POST/developer
+    $app->post('/developers', [DeveloperController::class, 'handleCreateDeveloper']);
+
+    //! ROUTE: DELETE/developers
+    $app->delete('/developers', [DeveloperController::class, 'handleDeleteDeveloper']);
+
+    //! ROUTE: PUT/developers
+    $app->put('/developers', [DeveloperController::class, 'handleUpdateDeveloper']);
 
     //* ROUTE: GET/dlc
     $app->get('/dlcs', [DLCController::class, 'handleGetDLCs']);

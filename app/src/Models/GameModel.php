@@ -143,6 +143,11 @@ class GameModel extends BaseModel
         return $this->insert($this->table_name, $game);
     }
 
+    public function deleteGame($game_id)
+    {
+        return $this->delete($this->table_name, ['game_id' => $game_id]);
+    }
+
     public function updateGame($game)
     {
         return $this->update($this->table_name, $game, ['game_id' => $game['Game_Id']]);
