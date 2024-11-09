@@ -5,6 +5,9 @@ namespace App\Controllers;
 use App\Models\UpdateModel;
 use App\Services\UpdatesService;
 use Fig\Http\Message\StatusCodeInterface;
+use Monolog\Handler\StreamHandler;
+use Monolog\Level;
+use Monolog\Logger;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
@@ -91,7 +94,8 @@ class UpdateController extends BaseController
         return $this->renderJson($response, $payload, $status);
     }
 
-    public function handleUpdateUpdate(Request $request, Response $response){
+    public function handleUpdateUpdate(Request $request, Response $response)
+    {
         $new_update = $request->getParsedBody();
         // Update the Update
         $result = $this->updatesService->updateUpdate($new_update);
