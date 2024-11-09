@@ -71,7 +71,8 @@ class UpdatesService
         }
 
         if ($errors) return Result::fail("Invalid Update Object", $errors);
-        $update_created = $this->updateModel->CreateUpdate($new_update);
+        $created_id = $this->updateModel->CreateUpdate($new_update);
+        $update_created = $this->updateModel->getUpdateById($created_id);
         return Result::success("Update successfully created!", $update_created);
     }
 
@@ -82,8 +83,7 @@ class UpdatesService
         $validator->mapFieldsRules($this->delete_rules);
         if (!$validator->validate()) {
             $errors = $validator->errors();
-        }
-        if (!$this->updateModel->isValidUpdateId($update['id'])) {
+        } else if (!$this->updateModel->isValidUpdateId($update['id'])) {
             $errors['id'][] = "Could not find Update with id [{$update['id']}]";
         }
         if ($errors) return Result::fail("Invalid Update Id", $errors);

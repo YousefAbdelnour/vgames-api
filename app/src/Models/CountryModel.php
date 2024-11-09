@@ -33,6 +33,7 @@ class CountryModel extends BaseModel
     {
         $sql = "SELECT * FROM {$this->table_name} WHERE Country_Name = :Country_Name";
         $result = $this->fetchSingle($sql, ["Country_Name" => $country_Name]);
+        if ($result == false) return false;
 
         //* Parsing the Development_Companies field
         $result["Development_Companies"] = $result["Development_Companies"] == null ? [] :

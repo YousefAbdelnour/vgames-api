@@ -59,7 +59,7 @@ class UpdateController extends BaseController
             //prepare a successful response
             $payload['status'] = $status;
             $payload['success'] = true;
-            $payload['inserted_id'] = $result->getData();
+            $payload['inserted_update'] = $result->getData();
         } else {
             $payload['status'] = $status;
             $payload['success'] = false;
@@ -84,7 +84,7 @@ class UpdateController extends BaseController
             //prepare a successful response
             $payload['status'] = $status;
             $payload['success'] = true;
-            $payload['deleted_id'] = $result->getData();
+            $payload['deleted_update'] = $result->getData();
         } else {
             $payload['status'] = $status;
             $payload['success'] = false;
@@ -106,7 +106,7 @@ class UpdateController extends BaseController
             //prepare a successful response
             $payload['status'] = $status;
             $payload['success'] = true;
-            $payload['inserted_id'] = $result->getData();
+            $payload['updated_update'] = $result->getData();
         } else {
             $payload['status'] = $status;
             $payload['success'] = false;
