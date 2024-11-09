@@ -80,29 +80,72 @@ class DeveloperController extends BaseController
         return $developer;
     }
 
-    //! POST
-    // public function handleCreateDevelopers(Request $request, Response $response): Response
-    // {
-    //     // 1) Retrieve the info about the new players to be created from
-    //     // the request body.
-    //     $newDev = $request->getParsedBody();
-    //     dd(data: $newDev);
-    //     // Create the new players
-    //     $result = $this->developersService->createDeveloper($newDev);
-    //     $payload = [];
-    //     if ($result->isSuccess()) {
-    //         //Prepare a successful response
-    //         $payload["success"] = true;
-    //         $payload["status"] = 201;
-    //         $payload["message"] = $result->getData();
-    //     } else {
-    //         //Prepare a failure response
+    public function handleCreateDeveloper(Request $request, Response $response)
+    {
+        $new_dev = $request->getParsedBody();
+        $result = $this->developersService->createDeveloper($new_dev);
 
-    //         $payload["success"] = false;
-    //         $payload["status"] = 400;
-    //         $payload["message"] = $result->getMessage();
-    //     }
+        $status = $result->isSuccess() ? HTTP_CREATED : 400;
+        $payload = [];
 
-    //     return $this->renderJson($response, $payload, 201);
-    // }
+
+        if ($result->isSuccess()) {
+            $payload['status'] = $status;
+            $payload['success'] = true;
+            $payload['inserted_developer'] = $result->getData();
+        } else {
+            $payload['status'] = $status;
+            $payload['success'] = false;
+            $payload['errors'] = $result->getData();
+        }
+        $payload['message'] = $result->getMessage();
+        return $this->renderJson($response, $payload, $status);
+    }
+
+    public function handleDeleteDeveloper(Request $request, Response $response)
+    {
+        $body = $request->getParsedBody();
+
+        // Delete update
+        $result = $this->developersService->deleteDeveloper($body);
+
+        $status = $result->isSuccess() ? HTTP_OK : 400;
+
+        $payload = [];
+
+        if ($result->isSuccess()) {
+            //prepare a successful response
+            $payload['status'] = $status;
+            $payload['success'] = true;
+            $payload['deleted_developer'] = $result->getData();
+        } else {
+            $payload['status'] = $status;
+            $payload['success'] = false;
+            $payload['errors'] = $result->getData();
+        }
+        $payload['message'] = $result->getMessage();
+        return $this->renderJson($response, $payload, $status);
+    }
+
+    public function handleUpdateDeveloper(Request $request, Response $response)
+    {
+        $new_dev = $request->getParsedBody();
+        // Update the Update
+        $result = $this->developersService->updateDeveloper($new_dev);
+        $status = $result->isSuccess() ? HTTP_OK : 400;
+        $payload = [];
+
+        if ($result->isSuccess()) {
+            //prepare a successful response
+            $payload['status'] = $status;
+            $payload['success'] = true;
+            $payload['updated_developer'] = $result->getData();
+        } else {
+            $payload['status'] = $status;
+            $payload['success'] = false;
+            $payload['errors'] = $result->getData();
+        }
+        $payload['message'] = $result->getMessage();
+        return $this->renderJson($response, $payload, $status);
+    }
 }

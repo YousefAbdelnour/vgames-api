@@ -10,7 +10,7 @@ use App\Models\DeveloperModel;
 use App\Models\GameModel;
 use App\Models\GenreModel;
 
-class GamesService
+class GamesService extends BaseService
 {
     private $valid_esrb_ratings = ['E', 'E10+', 'T', 'M', 'AO', 'RP'];
 
@@ -32,7 +32,6 @@ class GamesService
         ],
         'Release_Date' => [
             'required',
-            ['dateFormat', 'Y-m-d']
         ],
         'Country_Name' => [
             'required',
@@ -51,6 +50,13 @@ class GamesService
             'integer',
             ['min', 1]
         ],
+    );
+
+    private $delete_rules = array(
+        'id' => [
+            'required',
+            'integer',
+        ]
     );
 
     public function __construct(
@@ -99,14 +105,14 @@ class GamesService
 
         if (!$validator->validate()) {
             $errors = $validator->errors();
-        } else {
-            // Validate PK (game_id)
-            if (isset($game['Game_Id']) && !$this->game_model->isValidGameId($game['Game_Id'])) {
-                $errors['Developer_Id'][] = "Could not find developer with id [{$game['Developer_Id']}]";
-            };
-
-            $this->validateGameBody($game, $errors);
         }
+
+        // Validate PK (game_id)
+        if (isset($game['Game_Id']) && !$this->game_model->isValidGameId($game['Game_Id'])) {
+            $errors['Game_Id'][] = "Could not find game with id [{$game['Game_Id']}]";
+        };
+
+        $this->validateGameBody($game, $errors);
 
         // Return fail if any errors
         if ($errors) return Result::fail("Invalid game object", $errors);
@@ -118,9 +124,32 @@ class GamesService
         return Result::success('Game updated successfully.', $update_game);
     }
 
-    public function deleteGame(): Result
+    public function deleteGame($body): Result
     {
-        return Result::success('');
+        $errors = [];
+
+        $validator = new Validator($body);
+
+        $validator->mapFieldsRules($this->delete_rules);
+
+        if (!$validator->validate()) {
+            // if id isn't an integer it won't check if it exists
+            $errors = $validator->errors();
+        } else if (!$this->game_model->isValidGameId($body['id'])) {
+            // if id is valid (integer), check if it exists
+            $errors['id'][] = "Could not find game with id [{$body['id']}]";
+        }
+
+        // Return fail if any errors
+        if ($errors) return Result::fail("Invalid game ID", $errors);
+
+        $game_id = $body['id'];
+        // return the deleted game object
+        $deleted_game = $this->game_model->getGameById($game_id);
+
+        $this->game_model->deleteGame($game_id);
+
+        return Result::success('Game deleted successfully.', $deleted_game);
     }
 
     private function validateGameBody($game, &$errors)
@@ -128,6 +157,10 @@ class GamesService
         if (isset($game['Developer_Id']) && !$this->developer_model->isValidDevId($game['Developer_Id'])) {
             $errors['Developer_Id'][] = "Could not find developer with id [{$game['Developer_Id']}]";
         };
+
+        if (isset($game['Release_Date']) && !$this->isValidDate($game['Release_Date'])) {
+            $errors['Release_Date'][] = "Date must be a valid date with format 'YYYY-MM-DD'";
+        }
 
         if (isset($game['Genre_Name']) && !$this->genre_model->isValidGenreName($game['Genre_Name'])) {
             $errors['Genre_Name'][] = "Could not find genre titled: [{$game['Genre_Name']}]";
