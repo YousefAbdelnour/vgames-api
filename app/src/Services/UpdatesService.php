@@ -7,6 +7,8 @@ use App\Models\GameModel;
 use App\Models\UpdateModel;
 use App\Validation\Validator;
 use DateTime;
+use Psr\Http\Message\RequestInterface as Request;
+use Slim\Exception\HttpBadRequestException;
 
 class UpdatesService extends BaseService
 {
@@ -76,7 +78,7 @@ class UpdatesService extends BaseService
         return Result::success("Update successfully created!", $update_created);
     }
 
-    public function deleteUpdate($update): Result
+    public function deleteUpdate(Request $request, $update): Result
     {
         $errors = [];
         $validator = new Validator($update);
@@ -86,7 +88,10 @@ class UpdatesService extends BaseService
         } else if (!$this->updateModel->isValidUpdateId($update['id'])) {
             $errors['id'][] = "Could not find Update with id [{$update['id']}]";
         }
-        if ($errors) return Result::fail("Invalid Update Id", $errors);
+        if ($errors) {
+            throw new HttpBadRequestException($request, "Invalid Update Id");
+            // return Result::fail("Invalid Update Id", $errors);
+        }
         $update_id = $update['id'];
         $deleted_update = $this->updateModel->getUpdateById($update_id);
 
