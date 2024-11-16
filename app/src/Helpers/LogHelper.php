@@ -18,15 +18,25 @@ class LogHelper
         //* 1) Instantiate the logger
         $logger = new Logger("ACCESS");
         //* 2) push a stream handler
-        $logger->pushHandler(new StreamHandler(APP_LOGS_PATH . 'access.log', Level::Debug));
-        $log_record = "User accessed this service successfully! IP address: " . $_SERVER['REMOTE_ADDR'];
-        $extra_info = $request->getQueryParams();
-        $logger->info($log_record, $extra_info);
+        $logger->pushHandler(new StreamHandler(APP_LOGS_PATH . 'access.log', Level::Info));
+        $method = $request->getMethod();
+        $uri = (string)$request->getUri();
+        $ipAddress = $_SERVER['REMOTE_ADDR'] ?? 'Unknown';
+        $queryParams = $request->getQueryParams();
+        $logMessage = sprintf(
+            "Access log: Method: %s | URI: %s | IP: %s | Query Params: %s",
+            $method,
+            $uri,
+            $ipAddress,
+            json_encode($queryParams)
+        );
+        $logger->info($logMessage);
     }
 
-    public static function getErrorLogger(): Logger{
-        $logger = new Logger("ERROR");
-        $logger->pushHandler(new StreamHandler(APP_LOGS_PATH . 'error.log', Level::Error));
-        return $logger;
+    public static function logError($log_info)
+    {
+        $logger = new Logger("NOTICE");
+        $logger->pushHandler(new StreamHandler(APP_LOGS_PATH . 'error.log', Level::Notice));
+        $logger->notice($log_info);
     }
 }
