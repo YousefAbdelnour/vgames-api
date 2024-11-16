@@ -129,7 +129,6 @@ return static function (Slim\App $app): void {
 
     //! ROUTE: /Updates Log
     $app->get('/log', [UpdateController::class, 'handleAccessLog']);
-    $app->get('/error', function (Request $request, Response $response) {
-        throw new \Slim\Exception\HttpNotFoundException($request, "Oi! Something went wrong");
-    });
+
+    $app->get('/games/{game_id}/achievements', [GameController::class, 'handleGetAchievementsByGame']);
 };
