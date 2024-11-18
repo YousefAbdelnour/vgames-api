@@ -29,10 +29,10 @@ return static function (Slim\App $app): void {
     //* ROUTE: GET/countries
     $app->get('/countries', [CountryController::class, 'handleGetCountries']);
 
-    //* ROUTE: GET/countries/{country_id}
+    //* ROUTE: GET/countries/{country_Name}
     $app->get('/countries/{country_Name}', [CountryController::class, 'handleGetCountryByName']);
 
-    //* ROUTE: GET/countries/{country_id}/games
+    //* ROUTE: GET/countries/{country_Name}/games
     $app->get('/countries/{country_Name}/games', [CountryController::class, 'handleGetGamesByCountryName']);
 
     //* ROUTE: GET/games
@@ -125,5 +125,11 @@ return static function (Slim\App $app): void {
         ];
         $response->getBody()->write(json_encode($payload, JSON_UNESCAPED_SLASHES | JSON_PARTIAL_OUTPUT_ON_ERROR));
         return $response;
+    });
+
+    //! ROUTE: /Updates Log
+    $app->get('/log', [UpdateController::class, 'handleAccessLog']);
+    $app->get('/error', function (Request $request, Response $response) {
+        throw new \Slim\Exception\HttpNotFoundException($request, "Oi! Something went wrong");
     });
 };
