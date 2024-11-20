@@ -2,6 +2,7 @@
 
 namespace App\Controllers;
 
+use App\Helpers\ClientHelper;
 use App\Models\GameModel;
 use App\Services\GamesService;
 use GuzzleHttp\Client;
@@ -21,30 +22,28 @@ class GameController extends BaseController
     {
         $game = $this->validateGameId($args, $request);
         $game_name = strtolower(str_replace(' ', '-', $game['Name']));
-        $client = new Client();
         $rawg_uri = "https://api.rawg.io/api/games";
         $api_key = "25fe58f136e544d9bd1247d6b312ac0f";
-        $rawg_game = $client->request('GET', $rawg_uri, [
+        $client = new ClientHelper([
             'query' => [
                 "key" => $api_key,
                 "search" => $game_name,
                 "search_exact" => true
             ]
         ]);
-        $data = json_decode($rawg_game->getBody(), true);
+        $data = $client->invokeUri($rawg_uri);
         if ($data['count'] == 0) {
             dd($game);
             throw new HttpNotFoundException($request, "Game Could not be found In Rawg's Database");
         }
         $game_id = $data['results'][0]['id'];
-
         $achievements_Uri = "https://api.rawg.io/api/games/{$game_id}/achievements";
-        $rawg_achievements = $client->request('GET', $achievements_Uri, [
+        $client->setOptions([
             'query' => [
                 "key" => $api_key
             ]
         ]);
-        $achievements = json_decode($rawg_achievements->getBody(), true);
+        $achievements = $client->invokeUri($achievements_Uri);
         if ($achievements['count'] == 0) {
             throw new HttpNotFoundException($request, "Game Achievements Could not be found in Rawg's Database");
         }
