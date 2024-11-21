@@ -21,7 +21,89 @@ class AboutController extends BaseController
             'version' => self::API_VERSION,
             'about' => 'Welcome! This is a Web service that provides information about video games.',
             'authors' => ["Yousef Abdelnour", "Rowan Lajoie", "Denis Voronov"],
-            'resources' => ["/games", "/reviews", "/countries", "/updates", "/genres", "/DLCs", "/developers", "/platforms"]
+            'resources' => [
+                "games" => [
+                    "GET" => [
+                        "/games",
+                        "/games/{game_id}",
+                        "/games/{game_id}/reviews",
+                        "/games/{game_id}/platforms",
+                    ],
+                    "POST" => [
+                        "/games",
+                    ],
+                    "DELETE" => [
+                        "/games",
+                    ],
+                    "PUT" => [
+                        "/games"
+                    ]
+                ],
+                "reviews" => [
+                    "GET" => [
+                        "/reviews",
+                        "/reviews/{review_id}"
+                    ]
+                ],
+                "countries" => [
+                    "GET" => [
+                        "/countries",
+                        "/countries/{country_Name}",
+                        "/counties/{country_Name}/games"
+                    ]
+                ],
+                "updates" => [
+                    "GET" => [
+                        "/updates",
+                        "/updates/{update_id}",
+                    ],
+                    "POST" => [
+                        "/updates",
+                    ],
+                    "DELETE" => [
+                        "/updates",
+                    ],
+                    "PUT" => [
+                        "/updates"
+                    ]
+                ],
+                "genres" => [
+                    "GET" => [
+                        "/genres",
+                        "/genres/{genre_name}",
+                        "/genres/{genre_name}/games"
+                    ]
+                ],
+                "DLCs" => [
+                    "GET" => [
+                        "/dlcs",
+                        "/dlcs/{dlc_id}"
+                    ]
+                ],
+                "developers" => [
+                    "GET" => [
+                        "/developers",
+                        "/developers/{developer_id}",
+                        "/developers/{developer_id}/games",
+                    ],
+                    "POST" => [
+                        "/developers",
+                    ],
+                    "DELETE" => [
+
+                        "/developers",
+                    ],
+                    "PUT" => [
+                        "/developers"
+                    ]
+                ],
+                "platforms" => [
+                    "GET" => [
+                        "/platforms",
+                        "/platforms/{platform_name}"
+                    ]
+                ]
+            ]
         );
 
         return $this->renderJson($response, $data);

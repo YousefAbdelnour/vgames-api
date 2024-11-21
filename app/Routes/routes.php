@@ -9,6 +9,7 @@ use App\Controllers\CountryController;
 use App\Controllers\GameController;
 use App\Controllers\GenreController;
 use App\Controllers\DeveloperController;
+use App\Controllers\DistanceController;
 use App\Controllers\DLCController;
 use App\Controllers\PlatformController;
 
@@ -29,10 +30,10 @@ return static function (Slim\App $app): void {
     //* ROUTE: GET/countries
     $app->get('/countries', [CountryController::class, 'handleGetCountries']);
 
-    //* ROUTE: GET/countries/{country_id}
+    //* ROUTE: GET/countries/{country_Name}
     $app->get('/countries/{country_Name}', [CountryController::class, 'handleGetCountryByName']);
 
-    //* ROUTE: GET/countries/{country_id}/games
+    //* ROUTE: GET/countries/{country_Name}/games
     $app->get('/countries/{country_Name}/games', [CountryController::class, 'handleGetGamesByCountryName']);
 
     //* ROUTE: GET/games
@@ -116,6 +117,9 @@ return static function (Slim\App $app): void {
     //* ROUTE: GET/platforms/{platforms_name}
     $app->get('/platforms/{platform_name}', [PlatformController::class, 'handleGetPlatformByName']);
 
+    //* ROUTE: POST /distance
+    $app->post('/distance', [DistanceController::class, 'handleCalculateDistance']);
+
     //* ROUTE: GET /ping
     $app->get('/ping', function (Request $request, Response $response, $args) {
 
@@ -129,4 +133,6 @@ return static function (Slim\App $app): void {
 
     //! ROUTE: /Updates Log
     $app->get('/log', [UpdateController::class, 'handleAccessLog']);
+
+    $app->get('/games/{game_id}/achievements', [GameController::class, 'handleGetAchievementsByGame']);
 };
