@@ -63,9 +63,14 @@ class GameController extends BaseController
         // games
         $games = $this->game_model->getGames($params);
 
+        // free games
+        $client = new ClientHelper();
+        $free_games = $client->invokeUri('https://www.freetogame.com/api/games');
+
         // response
         return $this->renderJson($response, [
             "games" => $games,
+            "free_games" => $free_games
         ]);
     }
 
