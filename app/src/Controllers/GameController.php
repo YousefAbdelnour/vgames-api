@@ -5,7 +5,6 @@ namespace App\Controllers;
 use App\Helpers\ClientHelper;
 use App\Models\GameModel;
 use App\Services\GamesService;
-use GuzzleHttp\Client;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Slim\Exception\HttpNotFoundException;

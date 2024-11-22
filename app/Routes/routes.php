@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 use App\Controllers\AboutController;
-
+use App\Controllers\AccountController;
 //* Imports for controllers
 use App\Controllers\CountryController;
 use App\Controllers\GameController;
@@ -52,6 +52,9 @@ return static function (Slim\App $app): void {
 
     //! ROUTE: PUT/games
     $app->put('/games', [GameController::class, 'handleUpdateGame']);
+
+    //* ROUTE: GET/games/{game_id}/achievements
+    $app->get('/games/{game_id}/achievements', [GameController::class, 'handleGetAchievementsByGame']);
 
     //* ROUTE: GET/games/{game_id}/platforms
     $app->get('/games/{game_id}/platforms', [GameController::class, 'handleGetPlatformsByGameId']);
@@ -130,5 +133,6 @@ return static function (Slim\App $app): void {
     //! ROUTE: /Updates Log
     $app->get('/log', [UpdateController::class, 'handleAccessLog']);
 
-    $app->get('/games/{game_id}/achievements', [GameController::class, 'handleGetAchievementsByGame']);
+    //! ROUTE: POST/register
+    $app->post('/register', [AccountController::class, 'handleRegister']);
 };
