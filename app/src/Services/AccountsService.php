@@ -36,7 +36,7 @@ class AccountsService extends BaseService
         ],
     );
 
-    public function createUpdate($new_account)
+    public function createAccount($new_account)
     {
         $errors = [];
         $validator = new Validator($new_account);
@@ -44,7 +44,7 @@ class AccountsService extends BaseService
         if (!$validator->validate()) {
             $errors = $validator->errors();
         }
-        if ($errors) return Result::fail("Invalid Update Object", $errors);
+        if ($errors) return Result::fail("Invalid Account", $errors);
         $new_account['password'] = $this->cryptPassword($new_account['password']);
         $created_id = $this->accountModel->createAccount($new_account);
         $account_created = $this->accountModel->getAccountById($created_id);

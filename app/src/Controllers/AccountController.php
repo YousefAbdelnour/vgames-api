@@ -23,7 +23,7 @@ class AccountController extends BaseController
         if ($result->isSuccess()) {
             $payload['status'] = $status;
             $payload['success'] = true;
-            $payload['inserted_game'] = $result->getData();
+            $payload['inserted_account'] = $result->getData();
         } else {
             $payload['status'] = $status;
             $payload['success'] = false;
