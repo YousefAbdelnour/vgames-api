@@ -50,4 +50,8 @@ class AccountsService extends BaseService
         $account_created = $this->accountModel->getAccountById($created_id);
         return Result::success("Account successfully created!", $account_created);
     }
+
+    public function accessAccount(){
+        
+    }
 }
