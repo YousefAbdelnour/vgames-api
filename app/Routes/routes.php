@@ -10,6 +10,7 @@ use App\Controllers\GameController;
 use App\Controllers\GenreController;
 use App\Controllers\DeveloperController;
 use App\Controllers\DLCController;
+use App\Controllers\EloController;
 use App\Controllers\PlatformController;
 
 use App\Controllers\ReviewController;
@@ -135,4 +136,7 @@ return static function (Slim\App $app): void {
 
     //! ROUTE: POST/register
     $app->post('/register', [AccountController::class, 'handleRegister']);
+
+    //! ROUTE: POST/elo
+    $app->post('/elo', [EloController::class, 'handleCalculateElo']);
 };
