@@ -21,6 +21,11 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 
 return static function (Slim\App $app): void {
 
+    //? ROUTE: POST /login
+    $app->post('/login', [AccountController::class, 'handleGenerateToken']);
+
+    //? ROUTE: POST /
+
     // Routes without authentication check: /login, /token
 
     // Routes with authentication
