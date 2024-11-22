@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Nov 01, 2024 at 11:08 PM
+-- Generation Time: Nov 22, 2024 at 04:56 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -264,6 +264,36 @@ INSERT INTO `review` (`Review_Id`, `Game_Id`, `Rating`, `Date`, `Likes`, `Platfo
 (2, 2, 4.8, '2006-07-01', 80000, 'Xbox'),
 (3, 3, 4.9, '2016-06-12', 70000, 'Steam');
 
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `ws_log`
+--
+
+CREATE TABLE `ws_log` (
+  `log_id` int(10) UNSIGNED NOT NULL,
+  `email` varchar(150) NOT NULL,
+  `user_action` varchar(255) NOT NULL,
+  `logged_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  `user_id` int(10) UNSIGNED NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `ws_users`
+--
+
+CREATE TABLE `ws_users` (
+  `user_id` int(10) UNSIGNED NOT NULL,
+  `first_name` varchar(100) NOT NULL,
+  `last_name` varchar(150) NOT NULL,
+  `email` varchar(150) NOT NULL,
+  `password` varchar(255) NOT NULL,
+  `role` varchar(10) NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
 --
 -- Indexes for dumped tables
 --
@@ -332,6 +362,19 @@ ALTER TABLE `review`
   ADD KEY `Review_Platform_Name_FK` (`Platform_Name`);
 
 --
+-- Indexes for table `ws_log`
+--
+ALTER TABLE `ws_log`
+  ADD PRIMARY KEY (`log_id`);
+
+--
+-- Indexes for table `ws_users`
+--
+ALTER TABLE `ws_users`
+  ADD PRIMARY KEY (`user_id`),
+  ADD UNIQUE KEY `email` (`email`);
+
+--
 -- AUTO_INCREMENT for dumped tables
 --
 
@@ -364,6 +407,18 @@ ALTER TABLE `game_update`
 --
 ALTER TABLE `review`
   MODIFY `Review_Id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
+-- AUTO_INCREMENT for table `ws_log`
+--
+ALTER TABLE `ws_log`
+  MODIFY `log_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `ws_users`
+--
+ALTER TABLE `ws_users`
+  MODIFY `user_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
 -- Constraints for dumped tables
