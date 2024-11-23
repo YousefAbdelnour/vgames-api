@@ -2,7 +2,9 @@
 
 namespace App\Controllers;
 
+use App\Exceptions\HttpInvalidEloArgumentException;
 use App\Helpers\EloHelper;
+use Exception;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
@@ -12,13 +14,24 @@ class EloController extends BaseController
     {
         $body = $request->getParsedBody();
         $player_rating = $body['player_rating'];
+        if (!is_numeric($player_rating)) throw new HttpInvalidEloArgumentException($request);
         $rounds = $body['games_result'];
         $round_number = 0;
         $rounds_table = [];
+        $winning_score = 0;
+        $total_score = 0;
+        $total_elo_change = 0;
         foreach ($rounds as $round) {
             $round_number++;
-            EloHelper::calculateRoundElo( $rounds_table, $request, $round, $player_rating, $round_number);
+            EloHelper::calculateRoundElo($rounds_table, $request, $round, $player_rating, $round_number, $winning_score, $total_score, $total_elo_change);
         }
-        return $this->renderJson($response, $rounds_table);
+        $summary = array(
+            "initial_rating" => $player_rating,
+            "overall_score" => "{$winning_score}/{$total_score}",
+            "rating_change" => round($total_elo_change, 2),
+            "final_rating" => $player_rating + $total_elo_change,
+            "rounds_summary" => $rounds_table
+        );
+        return $this->renderJson($response, $summary);
     }
 }
