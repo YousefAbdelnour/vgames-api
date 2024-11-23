@@ -2,10 +2,12 @@
 
 namespace App\Controllers;
 
+use App\Helpers\ClientHelper;
 use App\Models\GameModel;
 use App\Services\GamesService;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
+use Slim\Exception\HttpNotFoundException;
 
 class GameController extends BaseController
 {
@@ -13,6 +15,41 @@ class GameController extends BaseController
     public function __construct(private GameModel $game_model, private GamesService $games_service)
     {
         parent::__construct();
+    }
+
+    public function handleGetAchievementsByGame(Request $request, Response $response, array $args): Response
+    {
+        $game = $this->validateGameId($args, $request);
+        $game_name = strtolower(str_replace(' ', '-', $game['Name']));
+        $rawg_uri = "https://api.rawg.io/api/games";
+        $api_key = "25fe58f136e544d9bd1247d6b312ac0f";
+        $client = new ClientHelper([
+            'query' => [
+                "key" => $api_key,
+                "search" => $game_name,
+                "search_exact" => true
+            ]
+        ]);
+        $data = $client->invokeUri($rawg_uri);
+        if ($data['count'] == 0) {
+            dd($game);
+            throw new HttpNotFoundException($request, "Game Could not be found In Rawg's Database");
+        }
+        $game_id = $data['results'][0]['id'];
+        $achievements_Uri = "https://api.rawg.io/api/games/{$game_id}/achievements";
+        $client->setOptions([
+            'query' => [
+                "key" => $api_key
+            ]
+        ]);
+        $achievements = $client->invokeUri($achievements_Uri);
+        if ($achievements['count'] == 0) {
+            throw new HttpNotFoundException($request, "Game Achievements Could not be found in Rawg's Database");
+        }
+        return $this->renderJson($response, [
+            "game" => $game,
+            "achievements" => $achievements,
+        ]);
     }
 
     public function handleGetGames(Request $request, Response $response): Response
@@ -25,9 +62,14 @@ class GameController extends BaseController
         // games
         $games = $this->game_model->getGames($params);
 
+        // free games
+        $client = new ClientHelper();
+        $free_games = $client->invokeUri('https://www.freetogame.com/api/games');
+
         // response
         return $this->renderJson($response, [
             "games" => $games,
+            "free_games" => $free_games
         ]);
     }
 
@@ -82,21 +124,9 @@ class GameController extends BaseController
 
         $result = $this->games_service->createGame($new_game);
 
-        $status = $result->isSuccess() ? HTTP_CREATED : 400;
+        $payload = $this->getPayload($result, 'inserted_game', HTTP_CREATED);
 
-        if ($result->isSuccess()) {
-            // success response
-            $payload['status'] = $status;
-            $payload['success'] = true;
-            $payload['inserted_game'] = $result->getData();
-        } else {
-            $payload['status'] = $status;
-            $payload['success'] = false;
-            $payload['errors'] = $result->getData();
-        }
-
-        $payload['message'] = $result->getMessage();
-        return $this->renderJson($response, $payload, $status);
+        return $this->renderJson($response, $payload, $payload["status_code"]);
     }
 
     public function handleUpdateGame(Request $request, Response $response): Response
@@ -106,21 +136,20 @@ class GameController extends BaseController
 
         $result = $this->games_service->updateGame($new_game);
 
-        $status = $result->isSuccess() ? HTTP_OK : 400;
+        $payload = $this->getPayload($result,  'updated_game');
 
-        if ($result->isSuccess()) {
-            // success response
-            $payload['status'] = $status;
-            $payload['success'] = true;
-            $payload['updated_game'] = $result->getData();
-        } else {
-            $payload['status'] = $status;
-            $payload['success'] = false;
-            $payload['errors'] = $result->getData();
-        }
+        return $this->renderJson($response, $payload, $payload["status_code"]);
+    }
 
-        $payload['message'] = $result->getMessage();
-        return $this->renderJson($response, $payload, $status);
+    public function handleDeleteGame(Request $request, Response $response): Response
+    {
+        $body = $request->getParsedBody();
+
+        $result = $this->games_service->deleteGame($body);
+
+        $payload = $this->getPayload($result,  'deleted_game');
+
+        return $this->renderJson($response, $payload, $payload["status_code"]);
     }
 
     private function validateGameId($args, $request)

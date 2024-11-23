@@ -80,29 +80,36 @@ class DeveloperController extends BaseController
         return $developer;
     }
 
-    //! POST
-    // public function handleCreateDevelopers(Request $request, Response $response): Response
-    // {
-    //     // 1) Retrieve the info about the new players to be created from
-    //     // the request body.
-    //     $newDev = $request->getParsedBody();
-    //     dd(data: $newDev);
-    //     // Create the new players
-    //     $result = $this->developersService->createDeveloper($newDev);
-    //     $payload = [];
-    //     if ($result->isSuccess()) {
-    //         //Prepare a successful response
-    //         $payload["success"] = true;
-    //         $payload["status"] = 201;
-    //         $payload["message"] = $result->getData();
-    //     } else {
-    //         //Prepare a failure response
+    public function handleCreateDeveloper(Request $request, Response $response)
+    {
+        $new_dev = $request->getParsedBody();
+        $result = $this->developersService->createDeveloper($new_dev);
 
-    //         $payload["success"] = false;
-    //         $payload["status"] = 400;
-    //         $payload["message"] = $result->getMessage();
-    //     }
+        $payload = $this->getPayload($result, 'inserted_developer', HTTP_CREATED);
 
-    //     return $this->renderJson($response, $payload, 201);
-    // }
+        return $this->renderJson($response, $payload, $payload["status_code"]);
+    }
+
+    public function handleDeleteDeveloper(Request $request, Response $response)
+    {
+        $body = $request->getParsedBody();
+
+        // Delete update
+        $result = $this->developersService->deleteDeveloper($body);
+
+        $payload = $this->getPayload($result, 'deleted_developer');
+
+        return $this->renderJson($response, $payload, $payload["status_code"]);
+    }
+
+    public function handleUpdateDeveloper(Request $request, Response $response)
+    {
+        $new_dev = $request->getParsedBody();
+        // Update the Update
+        $result = $this->developersService->updateDeveloper($new_dev);
+
+        $payload = $this->getPayload($result, 'updated_developer');
+
+        return $this->renderJson($response, $payload, $payload["status_code"]);
+    }
 }

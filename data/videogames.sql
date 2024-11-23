@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Oct 25, 2024 at 05:02 PM
+-- Generation Time: Nov 22, 2024 at 04:56 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -76,7 +76,7 @@ INSERT INTO `developer` (`Dev_Id`, `Dev_Name`, `Founder`, `Headquarters`, `Type`
 (2, 'Valve', 'Gabe Newell', 'Bellevue, USA', 'AAA', 0, 2, 50, '1996-08-24', 400),
 (3, 'CD Projekt Red', 'Marcin Iwi?ski', 'Warsaw, Poland', 'AAA', 0, 3, 15, '2002-07-01', 800),
 (4, 'Indie Studio A', 'Jane Doe', 'Toronto, Canada', 'Indie', 0, 4, 5, '2015-05-12', 20),
-(5, 'Paradox Interactive', 'Fredrik Wester', 'Stockholm, Sweden', 'AAA', 0, 5, 40, '1999-06-20', 1000);
+(5, 'Parado Interactive', 'Fredrik Wester', 'Stockholm, Sweden', 'AAA', 0, 5, 40, '1999-06-20', 1000);
 
 -- --------------------------------------------------------
 
@@ -116,7 +116,7 @@ INSERT INTO `dlc` (`DLC_Id`, `Game_Id`, `Name`, `Release_Date`, `Price`, `Descri
 
 CREATE TABLE `game` (
   `Game_Id` int(11) NOT NULL,
-  `Developer_Id` int(11) NOT NULL,
+  `Developer_Id` int(11) DEFAULT NULL,
   `Genre_Name` varchar(255) NOT NULL,
   `Name` varchar(255) NOT NULL,
   `Founder` varchar(255) NOT NULL,
@@ -160,7 +160,7 @@ CREATE TABLE `game_update` (
 --
 
 INSERT INTO `game_update` (`Update_Id`, `Limited_Time_Event`, `Game_Id`, `Date`, `Description`, `Version_Number`, `Update_Size`, `New_Features`) VALUES
-(1, 0, 1, '2018-12-20', 'Bug fixes and performance improvements.', '1.01', 1.5, 'Improved AI, Better performance'),
+(1, 0, 1, '2018-12-20', 'Bug fixes and performance improvements.', '1.01', 1.5, 'Improved AI, Better perforfore'),
 (2, 1, 2, '2007-10-10', 'Added multiplayer mode.', '2.0', 2, 'Multiplayer mode, New maps'),
 (3, 0, 3, '2017-08-15', 'New expansion content.', '1.22', 4.5, 'New quests, new regions');
 
@@ -264,6 +264,36 @@ INSERT INTO `review` (`Review_Id`, `Game_Id`, `Rating`, `Date`, `Likes`, `Platfo
 (2, 2, 4.8, '2006-07-01', 80000, 'Xbox'),
 (3, 3, 4.9, '2016-06-12', 70000, 'Steam');
 
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `ws_log`
+--
+
+CREATE TABLE `ws_log` (
+  `log_id` int(10) UNSIGNED NOT NULL,
+  `email` varchar(150) NOT NULL,
+  `user_action` varchar(255) NOT NULL,
+  `logged_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  `user_id` int(10) UNSIGNED NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `ws_users`
+--
+
+CREATE TABLE `ws_users` (
+  `user_id` int(10) UNSIGNED NOT NULL,
+  `first_name` varchar(100) NOT NULL,
+  `last_name` varchar(150) NOT NULL,
+  `email` varchar(150) NOT NULL,
+  `password` varchar(255) NOT NULL,
+  `role` varchar(10) NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
 --
 -- Indexes for dumped tables
 --
@@ -332,6 +362,19 @@ ALTER TABLE `review`
   ADD KEY `Review_Platform_Name_FK` (`Platform_Name`);
 
 --
+-- Indexes for table `ws_log`
+--
+ALTER TABLE `ws_log`
+  ADD PRIMARY KEY (`log_id`);
+
+--
+-- Indexes for table `ws_users`
+--
+ALTER TABLE `ws_users`
+  ADD PRIMARY KEY (`user_id`),
+  ADD UNIQUE KEY `email` (`email`);
+
+--
 -- AUTO_INCREMENT for dumped tables
 --
 
@@ -339,7 +382,7 @@ ALTER TABLE `review`
 -- AUTO_INCREMENT for table `developer`
 --
 ALTER TABLE `developer`
-  MODIFY `Dev_Id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `Dev_Id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT for table `dlc`
@@ -357,13 +400,25 @@ ALTER TABLE `game`
 -- AUTO_INCREMENT for table `game_update`
 --
 ALTER TABLE `game_update`
-  MODIFY `Update_Id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `Update_Id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT for table `review`
 --
 ALTER TABLE `review`
   MODIFY `Review_Id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
+-- AUTO_INCREMENT for table `ws_log`
+--
+ALTER TABLE `ws_log`
+  MODIFY `log_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `ws_users`
+--
+ALTER TABLE `ws_users`
+  MODIFY `user_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
 -- Constraints for dumped tables
@@ -386,7 +441,7 @@ ALTER TABLE `dlc`
 --
 ALTER TABLE `game`
   ADD CONSTRAINT `Game_Country_Name_FK` FOREIGN KEY (`Country_Name`) REFERENCES `country` (`Country_Name`),
-  ADD CONSTRAINT `Game_Dev_Id_FK` FOREIGN KEY (`Developer_Id`) REFERENCES `developer` (`Dev_Id`),
+  ADD CONSTRAINT `Game_Dev_Id_FK` FOREIGN KEY (`Developer_Id`) REFERENCES `developer` (`Dev_Id`) ON DELETE SET NULL ON UPDATE CASCADE,
   ADD CONSTRAINT `Game_Genre_Name_FK` FOREIGN KEY (`Genre_Name`) REFERENCES `genre` (`Genre_Name`);
 
 --

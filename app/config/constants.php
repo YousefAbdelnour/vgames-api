@@ -7,6 +7,9 @@ define('APP_BASE_PATH', dirname(__DIR__, 2));
 // Holds the name of the app's root directory.
 define('APP_ROOT_DIR', basename(dirname(__FILE__, 3)));
 
+//! define a route to the var/logs/ for logging purposes
+define('APP_LOGS_PATH', APP_BASE_PATH . '/var/logs/');
+
 //* HTTP response status code.
 const HTTP_OK = 200;
 const HTTP_CREATED = 201;
@@ -14,6 +17,7 @@ const HTTP_NO_CONTENT = 204;
 const HTTP_METHOD_NOT_ALLOWED = 405;
 const HTTP_UNSUPPORTED_MEDIA_TYPE = 415;
 const HTTP_NOT_FOUND = 404;
+const HTTP_BAD_REQUEST = 400;
 //* HTTP response headers.
 const HEADERS_CONTENT_TYPE = "Content-Type";
 //* Supported Media Types.

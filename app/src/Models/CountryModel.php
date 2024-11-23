@@ -33,6 +33,7 @@ class CountryModel extends BaseModel
     {
         $sql = "SELECT * FROM {$this->table_name} WHERE Country_Name = :Country_Name";
         $result = $this->fetchSingle($sql, ["Country_Name" => $country_Name]);
+        if ($result == false) return false;
 
         //* Parsing the Development_Companies field
         $result["Development_Companies"] = $result["Development_Companies"] == null ? [] :
@@ -79,8 +80,8 @@ class CountryModel extends BaseModel
     public static function filter(array $params, String &$sql, array &$query_args)
     {
         if (isset($params['language'])) {
-            $sql .= ' AND Language LIKE CONCAT(:language, "%")';
-            $query_args['language'] = $params['language'];
+            $sql .= ' AND Language LIKE :language ';
+            $query_args['language'] = '%' . $params['language'] . '%';
         }
         if (isset($params['min_internet_speed']) && isset($params['max_internet_speed'])) {
             $sql .= ' AND Average_Internet_Speed BETWEEN :min_internet_speed AND :max_internet_speed ';

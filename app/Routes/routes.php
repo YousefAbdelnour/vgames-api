@@ -3,12 +3,13 @@
 declare(strict_types=1);
 
 use App\Controllers\AboutController;
-
+use App\Controllers\AccountController;
 //* Imports for controllers
 use App\Controllers\CountryController;
 use App\Controllers\GameController;
 use App\Controllers\GenreController;
 use App\Controllers\DeveloperController;
+use App\Controllers\DistanceController;
 use App\Controllers\DLCController;
 use App\Controllers\PlatformController;
 
@@ -29,10 +30,10 @@ return static function (Slim\App $app): void {
     //* ROUTE: GET/countries
     $app->get('/countries', [CountryController::class, 'handleGetCountries']);
 
-    //* ROUTE: GET/countries/{country_id}
+    //* ROUTE: GET/countries/{country_Name}
     $app->get('/countries/{country_Name}', [CountryController::class, 'handleGetCountryByName']);
 
-    //* ROUTE: GET/countries/{country_id}/games
+    //* ROUTE: GET/countries/{country_Name}/games
     $app->get('/countries/{country_Name}/games', [CountryController::class, 'handleGetGamesByCountryName']);
 
     //* ROUTE: GET/games
@@ -47,8 +48,14 @@ return static function (Slim\App $app): void {
     //! ROUTE: POST/games
     $app->post('/games', [GameController::class, 'handleCreateGame']);
 
+    //! ROUTE: DELETE/games
+    $app->delete('/games', [GameController::class, 'handleDeleteGame']);
+
     //! ROUTE: PUT/games
     $app->put('/games', [GameController::class, 'handleUpdateGame']);
+
+    //* ROUTE: GET/games/{game_id}/achievements
+    $app->get('/games/{game_id}/achievements', [GameController::class, 'handleGetAchievementsByGame']);
 
     //* ROUTE: GET/games/{game_id}/platforms
     $app->get('/games/{game_id}/platforms', [GameController::class, 'handleGetPlatformsByGameId']);
@@ -64,6 +71,9 @@ return static function (Slim\App $app): void {
 
     //! ROUTE: DELETE/updates
     $app->delete('/updates', [UpdateController::class, 'handleDeleteUpdate']);
+
+    //! ROUTE: PUT/updates
+    $app->put('/updates', [UpdateController::class, 'handleUpdateUpdate']);
 
     //* ROUTE: GET/genres
     $app->get('/genres', [GenreController::class, 'handleGetGenres']);
@@ -83,6 +93,15 @@ return static function (Slim\App $app): void {
     //* ROUTE: GET/developers/{developer_id}/games
     $app->get('/developers/{developer_id}/games', [DeveloperController::class, 'handleGetGamesByDeveloperId']);
 
+    //! ROUTE: POST/developer
+    $app->post('/developers', [DeveloperController::class, 'handleCreateDeveloper']);
+
+    //! ROUTE: DELETE/developers
+    $app->delete('/developers', [DeveloperController::class, 'handleDeleteDeveloper']);
+
+    //! ROUTE: PUT/developers
+    $app->put('/developers', [DeveloperController::class, 'handleUpdateDeveloper']);
+
     //* ROUTE: GET/dlc
     $app->get('/dlcs', [DLCController::class, 'handleGetDLCs']);
 
@@ -101,6 +120,9 @@ return static function (Slim\App $app): void {
     //* ROUTE: GET/platforms/{platforms_name}
     $app->get('/platforms/{platform_name}', [PlatformController::class, 'handleGetPlatformByName']);
 
+    //* ROUTE: POST /distance
+    $app->post('/distance', [DistanceController::class, 'handleCalculateDistance']);
+
     //* ROUTE: GET /ping
     $app->get('/ping', function (Request $request, Response $response, $args) {
 
@@ -111,4 +133,10 @@ return static function (Slim\App $app): void {
         $response->getBody()->write(json_encode($payload, JSON_UNESCAPED_SLASHES | JSON_PARTIAL_OUTPUT_ON_ERROR));
         return $response;
     });
+
+    //! ROUTE: /Updates Log
+    $app->get('/log', [UpdateController::class, 'handleAccessLog']);
+
+    //! ROUTE: POST/register
+    $app->post('/register', [AccountController::class, 'handleRegister']);
 };

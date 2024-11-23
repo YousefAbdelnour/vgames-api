@@ -8,10 +8,6 @@ class UpdateModel extends BaseModel
 {
     private string $table_name = "game_update";
 
-    public array $fields = ['update_id', 'update_type', 'limited_time_event', 'game_id', 'date', 'description', 'version_number', 'update_size', 'new_features'];
-
-    public string $default_sort_field = 'update_id';
-
     public function __construct(PDOService $pdo)
     {
         parent::__construct($pdo);
@@ -38,20 +34,25 @@ class UpdateModel extends BaseModel
         $query_args = [];
         $sql = "SELECT * FROM {$this->table_name} WHERE update_id = :update_id";
         $result = $this->fetchSingle($sql, ["update_id" => $update_id]);
-
+        if ($result == false) return false;
         //* Parsing the New Features Column
         $result['New_Features'] = explode(',', $result["New_Features"]);
         return $result;
     }
 
-    public function createUpdate(array $new_updates)
+    public function createUpdate($new_update)
     {
-        return $this->insert($this->table_name, $new_updates);
+        return $this->insert($this->table_name, $new_update);
     }
 
     public function deleteUpdate($update_id)
     {
         return $this->delete($this->table_name, ['update_id' => $update_id]);
+    }
+
+    public function updateUpdate($update)
+    {
+        return $this->update($this->table_name, $update, ['update_id' => $update['Update_Id']]);
     }
 
     public static function parseNewFeatures($data)

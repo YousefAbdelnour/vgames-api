@@ -5,6 +5,9 @@ namespace App\Controllers;
 use App\Models\UpdateModel;
 use App\Services\UpdatesService;
 use Fig\Http\Message\StatusCodeInterface;
+use Monolog\Handler\StreamHandler;
+use Monolog\Level;
+use Monolog\Logger;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
@@ -49,21 +52,9 @@ class UpdateController extends BaseController
         $new_update = $request->getParsedBody();
         // Create the new Update
         $result = $this->updatesService->createUpdate($new_update);
-        $status = $result->isSuccess() ? HTTP_CREATED : 400;
-        $payload = [];
+        $payload = $this->getPayload($result, 'inserted_update', HTTP_CREATED);
 
-        if ($result->isSuccess()) {
-            //prepare a successful response
-            $payload['status'] = $status;
-            $payload['success'] = true;
-            $payload['inserted_id'] = $result->getData();
-        } else {
-            $payload['status'] = $status;
-            $payload['success'] = false;
-            $payload['errors'] = $result->getData();
-        }
-        $payload['message'] = $result->getMessage();
-        return $this->renderJson($response, $payload, $status);
+        return $this->renderJson($response, $payload, $payload["status_code"]);
     }
 
     public function handleDeleteUpdate(Request $request, Response $response)
@@ -71,23 +62,21 @@ class UpdateController extends BaseController
         $body = $request->getParsedBody();
 
         // Delete update
-        $result = $this->updatesService->deleteUpdate($body);
+        $result = $this->updatesService->deleteUpdate($request, $body);
 
-        $status = $result->isSuccess() ? HTTP_OK : 400;
+        $payload = $this->getPayload($result, 'deleted_update');
 
-        $payload = [];
+        return $this->renderJson($response, $payload, $payload["status_code"]);
+    }
 
-        if ($result->isSuccess()) {
-            //prepare a successful response
-            $payload['status'] = $status;
-            $payload['success'] = true;
-            $payload['inserted_id'] = $result->getData();
-        } else {
-            $payload['status'] = $status;
-            $payload['success'] = false;
-            $payload['errors'] = $result->getData();
-        }
-        $payload['message'] = $result->getMessage();
-        return $this->renderJson($response, $payload, $status);
+    public function handleUpdateUpdate(Request $request, Response $response)
+    {
+        $new_update = $request->getParsedBody();
+        // Update the Update
+        $result = $this->updatesService->updateUpdate($new_update);
+
+        $payload = $this->getPayload($result, 'updated_update');
+
+        return $this->renderJson($response, $payload, $payload["status_code"]);
     }
 }
