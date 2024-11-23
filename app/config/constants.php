@@ -17,6 +17,7 @@ const HTTP_NO_CONTENT = 204;
 const HTTP_METHOD_NOT_ALLOWED = 405;
 const HTTP_UNSUPPORTED_MEDIA_TYPE = 415;
 const HTTP_NOT_FOUND = 404;
+const HTTP_BAD_REQUEST = 400;
 //* HTTP response headers.
 const HEADERS_CONTENT_TYPE = "Content-Type";
 //* Supported Media Types.
