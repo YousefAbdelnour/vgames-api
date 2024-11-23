@@ -85,21 +85,9 @@ class DeveloperController extends BaseController
         $new_dev = $request->getParsedBody();
         $result = $this->developersService->createDeveloper($new_dev);
 
-        $status = $result->isSuccess() ? HTTP_CREATED : 400;
-        $payload = [];
+        $payload = $this->getPayload($result, 'inserted_developer', HTTP_CREATED);
 
-
-        if ($result->isSuccess()) {
-            $payload['status'] = $status;
-            $payload['success'] = true;
-            $payload['inserted_developer'] = $result->getData();
-        } else {
-            $payload['status'] = $status;
-            $payload['success'] = false;
-            $payload['errors'] = $result->getData();
-        }
-        $payload['message'] = $result->getMessage();
-        return $this->renderJson($response, $payload, $status);
+        return $this->renderJson($response, $payload, $payload["status_code"]);
     }
 
     public function handleDeleteDeveloper(Request $request, Response $response)
@@ -109,22 +97,9 @@ class DeveloperController extends BaseController
         // Delete update
         $result = $this->developersService->deleteDeveloper($body);
 
-        $status = $result->isSuccess() ? HTTP_OK : 400;
+        $payload = $this->getPayload($result, 'deleted_developer');
 
-        $payload = [];
-
-        if ($result->isSuccess()) {
-            //prepare a successful response
-            $payload['status'] = $status;
-            $payload['success'] = true;
-            $payload['deleted_developer'] = $result->getData();
-        } else {
-            $payload['status'] = $status;
-            $payload['success'] = false;
-            $payload['errors'] = $result->getData();
-        }
-        $payload['message'] = $result->getMessage();
-        return $this->renderJson($response, $payload, $status);
+        return $this->renderJson($response, $payload, $payload["status_code"]);
     }
 
     public function handleUpdateDeveloper(Request $request, Response $response)
@@ -132,20 +107,9 @@ class DeveloperController extends BaseController
         $new_dev = $request->getParsedBody();
         // Update the Update
         $result = $this->developersService->updateDeveloper($new_dev);
-        $status = $result->isSuccess() ? HTTP_OK : 400;
-        $payload = [];
 
-        if ($result->isSuccess()) {
-            //prepare a successful response
-            $payload['status'] = $status;
-            $payload['success'] = true;
-            $payload['updated_developer'] = $result->getData();
-        } else {
-            $payload['status'] = $status;
-            $payload['success'] = false;
-            $payload['errors'] = $result->getData();
-        }
-        $payload['message'] = $result->getMessage();
-        return $this->renderJson($response, $payload, $status);
+        $payload = $this->getPayload($result, 'updated_developer');
+
+        return $this->renderJson($response, $payload, $payload["status_code"]);
     }
 }

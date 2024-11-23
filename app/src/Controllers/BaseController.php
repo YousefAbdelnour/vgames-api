@@ -90,4 +90,14 @@ abstract class BaseController
             throw new HttpNotFoundException($request, $err_msg);
         }
     }
+
+    protected function getPayload($result, string $field, $status_code = HTTP_OK)
+    {
+        $success = $result->isSuccess();
+        $payload['status_code'] = $success ? $status_code : HTTP_BAD_REQUEST;
+        $payload['success'] = $result->isSuccess();
+        $payload[$success ? $field : "errors"] = $result->getData();
+        $payload['message'] = $result->getMessage();
+        return $payload;
+    }
 }

@@ -5,7 +5,6 @@ namespace App\Controllers;
 use App\Helpers\ClientHelper;
 use App\Models\GameModel;
 use App\Services\GamesService;
-use GuzzleHttp\Client;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Slim\Exception\HttpNotFoundException;
@@ -125,21 +124,9 @@ class GameController extends BaseController
 
         $result = $this->games_service->createGame($new_game);
 
-        $status = $result->isSuccess() ? HTTP_CREATED : 400;
+        $payload = $this->getPayload($result, 'inserted_game', HTTP_CREATED);
 
-        if ($result->isSuccess()) {
-            // success response
-            $payload['status'] = $status;
-            $payload['success'] = true;
-            $payload['inserted_game'] = $result->getData();
-        } else {
-            $payload['status'] = $status;
-            $payload['success'] = false;
-            $payload['errors'] = $result->getData();
-        }
-
-        $payload['message'] = $result->getMessage();
-        return $this->renderJson($response, $payload, $status);
+        return $this->renderJson($response, $payload, $payload["status_code"]);
     }
 
     public function handleUpdateGame(Request $request, Response $response): Response
@@ -149,21 +136,9 @@ class GameController extends BaseController
 
         $result = $this->games_service->updateGame($new_game);
 
-        $status = $result->isSuccess() ? HTTP_OK : 400;
+        $payload = $this->getPayload($result,  'updated_game');
 
-        if ($result->isSuccess()) {
-            // success response
-            $payload['status'] = $status;
-            $payload['success'] = true;
-            $payload['updated_game'] = $result->getData();
-        } else {
-            $payload['status'] = $status;
-            $payload['success'] = false;
-            $payload['errors'] = $result->getData();
-        }
-
-        $payload['message'] = $result->getMessage();
-        return $this->renderJson($response, $payload, $status);
+        return $this->renderJson($response, $payload, $payload["status_code"]);
     }
 
     public function handleDeleteGame(Request $request, Response $response): Response
@@ -172,21 +147,9 @@ class GameController extends BaseController
 
         $result = $this->games_service->deleteGame($body);
 
-        $status = $result->isSuccess() ? HTTP_OK : 400;
+        $payload = $this->getPayload($result,  'deleted_game');
 
-        if ($result->isSuccess()) {
-            // success response
-            $payload['status'] = $status;
-            $payload['success'] = true;
-            $payload['deleted_game'] = $result->getData();
-        } else {
-            $payload['status'] = $status;
-            $payload['success'] = false;
-            $payload['errors'] = $result->getData();
-        }
-
-        $payload['message'] = $result->getMessage();
-        return $this->renderJson($response, $payload, $status);
+        return $this->renderJson($response, $payload, $payload["status_code"]);
     }
 
     private function validateGameId($args, $request)
