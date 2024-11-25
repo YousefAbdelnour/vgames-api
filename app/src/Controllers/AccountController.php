@@ -20,45 +20,72 @@ class AccountController extends BaseController
     public function handleGenerateToken(Request $request, Response $response)
     {
         $key = SECRET_KEY;
+        $user_data = $request->getParsedBody();
 
-        //TODO: query the DB to ensure that the user is who they claim to be? Meaning, they need to
-        //have a valid account  based on the provided credentials
-
-        //* Assuming that the app/user was successfully logged in
-        //! Generate a token containing the following private claims
         $issued_at = time();
-        $expires_at = $issued_at + (60*60);
+        $expires_at = $issued_at + (60 * 60); //token valid for an hour
         $register_claims = [
-            'iss' => 'http://localhost/worldcup-api',
-            'aud' => 'http://myson.com',
+            'iss' => 'http://localhost/vgames-api',
+            'aud' => 'http://videogames.com',
             'iat' => $issued_at,
-            'exp' => $expires_at
+            'exp' => $expires_at,
         ];
 
-        $private_claims = array(
-            "user_id" => 1,
-            "email" => "",
-            "role" => "admin",
-        );
+        $private_claims = [
+            "user_id" => $user_data['user_id'],
+            "email" => $user_data['email'],
+            "role" => $user_data['role'],
+        ];
 
         $payload = array_merge($register_claims, $private_claims);
-        /**
-         * IMPORTANT:
-         * You must specify supported algorithms for your application. See
-         * https://tools.ietf.org/html/draft-ietf-jose-json-web-algorithms-40
-         * for a list of spec-compliant algorithms.
-         */
-        $jwt = JWT::encode($payload, SECRET_KEY, 'HS256');
 
-        $jwt_data = [
+        $jwt = JWT::encode($payload, $key, 'HS256');
+
+        return [
             "status" => "success",
-            "message" => "The token has been generated",
-            "token" => $jwt
+            "message" => "Token generated successfully",
+            "token" => $jwt,
         ];
-
-        return $this->renderJson($response, $jwt_data);
     }
 
+
+    public function handleLogin(Request $request, Response $response)
+    {
+        $existing_user = $request->getParsedBody();
+
+        $result = $this->accountsService->loginToAccount($existing_user);
+
+        //if the returned info is successful; proceed with token generation and data retrieval
+        if ($result->isSuccess()) {
+
+            $data = $result->getData();
+
+            //avoiding displaying hashed password
+            $displayed_data['email'] = $data['email'];
+            $displayed_data['role'] = $data['role'];
+
+            $message = $result->getMessage();
+
+            $request = $request->withParsedBody($data);
+            //use the generate token method to generate a login token
+            $jwt_data = $this->handleGenerateToken($request, $response);
+
+            //preparing the payload
+            $payload = [
+                "status" => "success",
+                "message" => $message,
+                "data" => $displayed_data,
+                "token" => $jwt_data['token'],
+            ];
+            //return renderJson with the prepared payload and the happy status code
+            return $this->renderJson($response, $payload, status_code: 200);
+        }
+        //
+        return $this->renderJson($response, [
+            "status" => "error",
+            "message" => "Invalid credentials",
+        ], HTTP_BAD_REQUEST);
+    }
 
     public function handleRegister(Request $request, Response $response)
     {
