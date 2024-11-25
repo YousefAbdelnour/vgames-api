@@ -65,19 +65,9 @@ class AccountController extends BaseController
         // user_id first_name last_email email password role created_at
         $new_user = $request->getParsedBody();
         $result = $this->accountsService->createAccount($new_user);
-        $status = $result->isSuccess() ? HTTP_CREATED : 400;
 
-        if ($result->isSuccess()) {
-            $payload['status'] = $status;
-            $payload['success'] = true;
-            $payload['inserted_account'] = $result->getData();
-        } else {
-            $payload['status'] = $status;
-            $payload['success'] = false;
-            $payload['errors'] = $result->getData();
-        }
+        $payload = $this->getPayload($result, 'inserted_account', HTTP_CREATED);
 
-        $payload['message'] = $result->getMessage();
-        return $this->renderJson($response, $payload, $status);
+        return $this->renderJson($response, $payload, $payload["status_code"]);
     }
 }

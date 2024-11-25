@@ -52,21 +52,9 @@ class UpdateController extends BaseController
         $new_update = $request->getParsedBody();
         // Create the new Update
         $result = $this->updatesService->createUpdate($new_update);
-        $status = $result->isSuccess() ? HTTP_CREATED : 400;
-        $payload = [];
+        $payload = $this->getPayload($result, 'inserted_update', HTTP_CREATED);
 
-        if ($result->isSuccess()) {
-            //prepare a successful response
-            $payload['status'] = $status;
-            $payload['success'] = true;
-            $payload['inserted_update'] = $result->getData();
-        } else {
-            $payload['status'] = $status;
-            $payload['success'] = false;
-            $payload['errors'] = $result->getData();
-        }
-        $payload['message'] = $result->getMessage();
-        return $this->renderJson($response, $payload, $status);
+        return $this->renderJson($response, $payload, $payload["status_code"]);
     }
 
     public function handleDeleteUpdate(Request $request, Response $response)
@@ -76,22 +64,9 @@ class UpdateController extends BaseController
         // Delete update
         $result = $this->updatesService->deleteUpdate($request, $body);
 
-        $status = $result->isSuccess() ? HTTP_OK : 400;
+        $payload = $this->getPayload($result, 'deleted_update');
 
-        $payload = [];
-
-        if ($result->isSuccess()) {
-            //prepare a successful response
-            $payload['status'] = $status;
-            $payload['success'] = true;
-            $payload['deleted_update'] = $result->getData();
-        } else {
-            $payload['status'] = $status;
-            $payload['success'] = false;
-            $payload['errors'] = $result->getData();
-        }
-        $payload['message'] = $result->getMessage();
-        return $this->renderJson($response, $payload, $status);
+        return $this->renderJson($response, $payload, $payload["status_code"]);
     }
 
     public function handleUpdateUpdate(Request $request, Response $response)
@@ -99,20 +74,9 @@ class UpdateController extends BaseController
         $new_update = $request->getParsedBody();
         // Update the Update
         $result = $this->updatesService->updateUpdate($new_update);
-        $status = $result->isSuccess() ? HTTP_OK : 400;
-        $payload = [];
 
-        if ($result->isSuccess()) {
-            //prepare a successful response
-            $payload['status'] = $status;
-            $payload['success'] = true;
-            $payload['updated_update'] = $result->getData();
-        } else {
-            $payload['status'] = $status;
-            $payload['success'] = false;
-            $payload['errors'] = $result->getData();
-        }
-        $payload['message'] = $result->getMessage();
-        return $this->renderJson($response, $payload, $status);
+        $payload = $this->getPayload($result, 'updated_update');
+
+        return $this->renderJson($response, $payload, $payload["status_code"]);
     }
 }
