@@ -75,11 +75,11 @@ class AccountsService extends BaseService
         $account = $this->accountModel->getAccountByEmail($existing_account['email']);
         //if the account returns nothing then it's not an existing account
         if (!$account) {
-            return Result::fail("Invalid Login", ["email" => ["Account not found."]]);
+            return Result::fail("Account Not Found", $errors);
         }
         //if the password doesn't match then throw the error
         if (!password_verify($existing_account['password'], $account['password'])) {
-            return Result::fail("Invalid Login", ["password" => ["Incorrect password."]]);
+            return Result::fail("Invalid Password", $errors);
         }
         return Result::success("Logged in successfully", $account);
     }
