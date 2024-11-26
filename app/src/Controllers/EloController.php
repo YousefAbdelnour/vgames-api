@@ -13,9 +13,10 @@ class EloController extends BaseController
     public function handleCalculateElo(Request $request, Response $response)
     {
         $body = $request->getParsedBody();
+        if (!isset($body['player_rating']) || !isset($body['game_results'])) throw new HttpInvalidEloArgumentException($request, "Fields are missing, please check that all the fields are there and try again.");
         $player_rating = $body['player_rating'];
         if (!is_numeric($player_rating)) throw new HttpInvalidEloArgumentException($request);
-        $rounds = $body['games_result'];
+        $rounds = $body['game_results'];
         $round_number = 0;
         $rounds_table = [];
         $winning_score = 0;

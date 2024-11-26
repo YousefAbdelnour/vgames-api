@@ -9,8 +9,9 @@ class EloHelper
 {
     public static function calculateRoundElo(array &$rounds_table, $request, $round, $player_rating, $round_number, &$winning_score, &$total_score, &$total_elo_change)
     {
+        if (!isset($round["opponent_rating"]) || !isset($round['score'])) throw new HttpInvalidEloArgumentException($request);
         $opp_rating = $round["opponent_rating"];
-        if (!is_numeric($opp_rating))  throw new HttpInvalidEloArgumentException($request);
+        if (!is_numeric($opp_rating))  throw new HttpInvalidEloArgumentException($request, "Fields are missing, please check that all the fields are there and try again.");
         $match_result = 0;
         switch (strtolower($round["score"])) {
             case 'win':
