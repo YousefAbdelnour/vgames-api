@@ -35,8 +35,22 @@ class LogHelper
 
     public static function logError($log_info)
     {
-        $logger = new Logger("NOTICE");
+        $logger = new Logger("EXCEPTION_HANDLER");
         $logger->pushHandler(new StreamHandler(APP_LOGS_PATH . 'error.log', Level::Notice));
         $logger->notice($log_info);
+    }
+
+    public static function logAAIssues($log_info)
+    {
+        $logger = new Logger("AA_ISSUES_HANDLER");
+        $logger->pushHandler(new StreamHandler(APP_LOGS_PATH . 'access.log', Level::Warning));
+        $logger->warning($log_info);
+    }
+
+    public static function logAASuccess($log_info)
+    {
+        $logger = new Logger("LOGIN_SUCCESS");
+        $logger->pushHandler(new StreamHandler(APP_LOGS_PATH . 'access.log', Level::Info));
+        $logger->info($log_info);
     }
 }
