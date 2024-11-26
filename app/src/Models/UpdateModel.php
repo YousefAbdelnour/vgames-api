@@ -7,6 +7,10 @@ use App\Core\PDOService;
 class UpdateModel extends BaseModel
 {
     private string $table_name = "game_update";
+    
+    public array $fields = ['update_id', 'update_type', 'limited_time_event', 'game_id', 'date', 'description', 'version_number', 'update_size', 'new_features'];
+
+    public string $default_sort_field = 'update_id';
 
     public function __construct(PDOService $pdo)
     {
