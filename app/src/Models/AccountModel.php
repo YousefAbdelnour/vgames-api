@@ -25,4 +25,12 @@ class AccountModel extends BaseModel
         if ($result == false) return false;
         return $result;
     }
+
+    public function getAccountByEmail($email)
+    {
+        $sql = "SELECT * FROM {$this->table_name} WHERE email = :email";
+        $result = $this->fetchSingle($sql, ["email" => $email]);
+        if ($result == false) return false;
+        return $result;
+    }
 }

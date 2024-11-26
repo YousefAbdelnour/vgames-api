@@ -10,6 +10,8 @@ define('APP_ROOT_DIR', basename(dirname(__FILE__, 3)));
 //! define a route to the var/logs/ for logging purposes
 define('APP_LOGS_PATH', APP_BASE_PATH . '/var/logs/');
 
+define('SECRET_KEY', 'secret_temp');
+
 //* HTTP response status code.
 const HTTP_OK = 200;
 const HTTP_CREATED = 201;

@@ -50,4 +50,37 @@ class AccountsService extends BaseService
         $account_created = $this->accountModel->getAccountById($created_id);
         return Result::success("Account successfully created!", $account_created);
     }
+
+    public function loginToAccount($existing_account)
+    {
+        $errors = [];
+        $validator = new Validator($existing_account);
+        //only two validations needed so they were created here
+        $validator->mapFieldsRules([
+            'email' => [
+                'required',
+                array('lengthMax', 150),
+                'email'
+            ],
+            'password' => [
+                'required',
+                array('lengthMax', 255)
+            ],
+        ]);
+        if (!$validator->validate()) {
+            $errors = $validator->errors();
+        }
+        //validation errors
+        if ($errors) return Result::fail("Invalid Login", $errors);
+        $account = $this->accountModel->getAccountByEmail($existing_account['email']);
+        //if the account returns nothing then it's not an existing account
+        if (!$account) {
+            return Result::fail("Account Not Found", $errors);
+        }
+        //if the password doesn't match then throw the error
+        if (!password_verify($existing_account['password'], $account['password'])) {
+            return Result::fail("Invalid Password", $errors);
+        }
+        return Result::success("Logged in successfully", $account);
+    }
 }
