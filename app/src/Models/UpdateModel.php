@@ -7,7 +7,7 @@ use App\Core\PDOService;
 class UpdateModel extends BaseModel
 {
     private string $table_name = "game_update";
-
+    public string $default_sort_field = 'Update_Id';
     public function __construct(PDOService $pdo)
     {
         parent::__construct($pdo);
