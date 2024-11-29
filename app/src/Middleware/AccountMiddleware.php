@@ -28,18 +28,17 @@ class AccountMiddleware implements MiddlewareInterface
         //* 1) Extract the token from header "Authorization: Bearer <JWT>"
         $auth_header = $request->getHeaderLine("Authorization");
         $jwt = str_replace("Bearer ", "", $auth_header);
-        $decoded = JWT::decode($jwt, new Key(SECRET_KEY, 'HS256'));
+
         try {
             $decoded = JWT::decode($jwt, new Key(SECRET_KEY, 'HS256'));
+            $request = $request->withAttribute("jwt", $decoded);
         } catch (LogicException $e) {
-
             //TODO: Throw a custom HTTP Specialized exception
-            echo $e->getMessage();
             throw new HttpUnauthorizedException($request, $e->getMessage());
         }
         //TODO: Show custom exception
         catch (Exception $e) {
-            echo $e->getMessage();
+            throw new HttpUnauthorizedException($request, $e->getMessage());
         }
         //! DO NOT remove or change the following statements.
         $response = $handler->handle($request);
