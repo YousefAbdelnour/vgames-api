@@ -11,11 +11,11 @@ use App\Helpers\LogHelper as Logger;
 
 return function (App $app) {
     // Add your middleware here.
-    $app->addMiddleware(new AccountMiddleware());
     $app->addMiddleware(new ContentNegotiationMiddleware());
     $app->addBodyParsingMiddleware();
     $app->addRoutingMiddleware();
-    $app->addMiddleware(new LoggerMiddleware());
+    $app->add(LoggerMiddleware::class);
+    $app->add(AccountMiddleware::class);
 
     //!NOTE: the error handling middleware MUST be added last.
     $errorMiddleware = $app->addErrorMiddleware(true, true, true);
