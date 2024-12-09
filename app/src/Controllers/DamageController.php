@@ -4,6 +4,7 @@ namespace App\Controllers;
 
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
+use App\Validation\Validator;
 
 class DamageController extends BaseController
 {
@@ -11,7 +12,7 @@ class DamageController extends BaseController
     {
         $data = json_decode($request->getBody(), true); // fixing bug related to arrays
 
-        //required fields
+        // Required fields
         $requiredFields = [
             'baseWeaponDamage',
             'damageMultiplier',
@@ -22,28 +23,18 @@ class DamageController extends BaseController
             'dotDuration',
             'dotDamagePerSecond'
         ];
-        //array for notifying user of missing fields
-        $missingFields = [];
 
-        foreach ($requiredFields as $field) {
-            if (!isset($data[$field])) {
-                $missingFields[] = $field;
-            }
-        }
+        $v = new Validator($data);
+        $v->rules([
+            'required' => $requiredFields,
+            'numeric' => $requiredFields
+        ]);
 
-        //if there are missing fields, return an error response
-        if (!empty($missingFields)) {
-            //manually concatenate missing fields
-            $errorMessage = 'Missing required fields: ';
-            foreach ($missingFields as $index => $field) {
-                if ($index > 0) {
-                    $errorMessage .= ', ';
-                }
-                $errorMessage .= $field;
-            }
-
+        //validate the data
+        if (!$v->validate()) {
             return $this->renderJson($response, [
-                'error' => $errorMessage
+                'error' => 'Validation failed',
+                'details' => $v->errors()
             ], 400);
         }
 
