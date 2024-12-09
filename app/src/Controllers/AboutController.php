@@ -12,7 +12,7 @@ class AboutController extends BaseController
 {
     private const API_NAME = 'Video games API';
 
-    private const API_VERSION = '1.0.0';
+    private const API_VERSION = '2.0.0';
 
     public function handleAboutWebService(Request $request, Response $response): Response
     {

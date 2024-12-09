@@ -70,6 +70,7 @@ class AccountsService extends BaseService
         if (!$validator->validate()) {
             $errors = $validator->errors();
         }
+
         //validation errors
         if ($errors) return Result::fail("Invalid Login", $errors);
         $account = $this->accountModel->getAccountByEmail($existing_account['email']);
