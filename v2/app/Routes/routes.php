@@ -1,0 +1,146 @@
+<?php
+
+declare(strict_types=1);
+
+use App\Controllers\AboutController;
+use App\Controllers\AccountController;
+//* Imports for controllers
+use App\Controllers\CountryController;
+use App\Controllers\GameController;
+use App\Controllers\GenreController;
+use App\Controllers\DeveloperController;
+use App\Controllers\DistanceController;
+use App\Controllers\DLCController;
+use App\Controllers\EloController;
+use App\Controllers\PlatformController;
+
+use App\Controllers\ReviewController;
+use App\Controllers\UpdateController;
+use App\Helpers\DateTimeHelper;
+use Psr\Http\Message\ResponseInterface as Response;
+use Psr\Http\Message\ServerRequestInterface as Request;
+
+return static function (Slim\App $app): void {
+
+    // Routes without authentication check: /login, /token
+    //? ROUTE: POST /login
+    $app->post('/login', [AccountController::class, 'handleLogin']);
+    // Routes with authentication
+    //* ROUTE: GET /
+    $app->get('/', [AboutController::class, 'handleAboutWebService']);
+    //* ROUTE: GET/countries
+    $app->get('/countries', [CountryController::class, 'handleGetCountries']);
+
+    //* ROUTE: GET/countries/{country_Name}
+    $app->get('/countries/{country_Name}', [CountryController::class, 'handleGetCountryByName']);
+
+    //* ROUTE: GET/countries/{country_Name}/games
+    $app->get('/countries/{country_Name}/games', [CountryController::class, 'handleGetGamesByCountryName']);
+
+    //* ROUTE: GET/games
+    $app->get('/games', [GameController::class, 'handleGetGames']);
+
+    //* ROUTE: GET/games/{game_id}
+    $app->get('/games/{game_id}', [GameController::class, 'handleGetGameById']);
+
+    //* ROUTE: GET/games/{game_id}/reviews
+    $app->get('/games/{game_id}/reviews', [GameController::class, 'handleGetReviewsByGameId']);
+
+    //! ROUTE: POST/games
+    $app->post('/games', [GameController::class, 'handleCreateGame']);
+
+    //! ROUTE: DELETE/games
+    $app->delete('/games', [GameController::class, 'handleDeleteGame']);
+
+    //! ROUTE: PUT/games
+    $app->put('/games', [GameController::class, 'handleUpdateGame']);
+
+    //* ROUTE: GET/games/{game_id}/achievements
+    $app->get('/games/{game_id}/achievements', [GameController::class, 'handleGetAchievementsByGame']);
+
+    //* ROUTE: GET/games/{game_id}/platforms
+    $app->get('/games/{game_id}/platforms', [GameController::class, 'handleGetPlatformsByGameId']);
+
+    //* ROUTE: GET/updates
+    $app->get('/updates', [UpdateController::class, 'handleGetUpdates']);
+
+    //* ROUTE: GET/updates/{update_id}
+    $app->get('/updates/{update_id}', [UpdateController::class, 'handleGetUpdateById']);
+
+    //! ROUTE: POST/updates
+    $app->post('/updates', [UpdateController::class, 'handleCreateUpdate']);
+
+    //! ROUTE: DELETE/updates
+    $app->delete('/updates', [UpdateController::class, 'handleDeleteUpdate']);
+
+    //! ROUTE: PUT/updates
+    $app->put('/updates', [UpdateController::class, 'handleUpdateUpdate']);
+
+    //* ROUTE: GET/genres
+    $app->get('/genres', [GenreController::class, 'handleGetGenres']);
+
+    //* ROUTE: GET/genres/{genre_name}
+    $app->get('/genres/{genre_name}', [GenreController::class, 'handleGetGenreByName']);
+
+    //* ROUTE: GET/genres/{genre_name}/games
+    $app->get('/genres/{genre_name}/games', [GenreController::class, 'handleGetGamesByGenreName']);
+
+    //* ROUTE: GET/developers
+    $app->get('/developers', [DeveloperController::class, 'handleGetDevelopers']);
+
+    //* ROUTE: GET/developers/{developer_id}
+    $app->get('/developers/{developer_id}', [DeveloperController::class, 'handleGetDeveloperById']);
+
+    //* ROUTE: GET/developers/{developer_id}/games
+    $app->get('/developers/{developer_id}/games', [DeveloperController::class, 'handleGetGamesByDeveloperId']);
+
+    //! ROUTE: POST/developer
+    $app->post('/developers', [DeveloperController::class, 'handleCreateDeveloper']);
+
+    //! ROUTE: DELETE/developers
+    $app->delete('/developers', [DeveloperController::class, 'handleDeleteDeveloper']);
+
+    //! ROUTE: PUT/developers
+    $app->put('/developers', [DeveloperController::class, 'handleUpdateDeveloper']);
+
+    //* ROUTE: GET/dlc
+    $app->get('/dlcs', [DLCController::class, 'handleGetDLCs']);
+
+    //* ROUTE: GET/dlc/{dlc_id}
+    $app->get('/dlcs/{dlc_id}', [DLCController::class, 'handleGetDLCById']);
+
+    //* ROUTE: GET/reviews
+    $app->get('/reviews', [ReviewController::class, 'handleGetReviews']);
+
+    //* ROUTE: GET/reviews/{review_id}
+    $app->get('/reviews/{review_id}', [ReviewController::class, 'handleGetReviewById']);
+
+    //* ROUTE: GET/platforms
+    $app->get('/platforms', [PlatformController::class, 'handleGetPlatforms']);
+
+    //* ROUTE: GET/platforms/{platforms_name}
+    $app->get('/platforms/{platform_name}', [PlatformController::class, 'handleGetPlatformByName']);
+
+    //* ROUTE: POST /distance
+    $app->post('/distance', [DistanceController::class, 'handleCalculateDistance']);
+
+    //* ROUTE: GET /ping
+    $app->get('/ping', function (Request $request, Response $response, $args) {
+
+        $payload = [
+            "greetings" => "Reporting! Hello there!",
+            "now" => DateTimeHelper::now(DateTimeHelper::Y_M_D_H_M),
+        ];
+        $response->getBody()->write(json_encode($payload, JSON_UNESCAPED_SLASHES | JSON_PARTIAL_OUTPUT_ON_ERROR));
+        return $response;
+    });
+
+    //! ROUTE: /Updates Log
+    $app->get('/log', [UpdateController::class, 'handleAccessLog']);
+
+    //! ROUTE: POST/register
+    $app->post('/register', [AccountController::class, 'handleRegister']);
+
+    //! ROUTE: POST/elo
+    $app->post('/elo', [EloController::class, 'handleCalculateElo']);
+};

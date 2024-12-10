@@ -2,9 +2,9 @@ RewriteEngine On
 # You might need to change the value of the path of the
 # the RewriteBase rule to specify the name of the sub directory.
 # Fro example:
-# RewriteBase /worldcup-api
-RewriteRule ^$ public/ [L]
-RewriteRule (.*) public/$1 [L]
+RewriteBase /vgames-api
+RewriteRule ^v1/(.*)$ v1/public/$1 [L]
+RewriteRule ^v2/(.*)$ v2/public/$1 [L]
 
 # TODO: enable slim-jwt-auth related .
 # RewriteRule .* - [env=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
