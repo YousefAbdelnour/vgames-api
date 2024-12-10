@@ -21,7 +21,7 @@ class AccountMiddleware implements MiddlewareInterface
         if (
             str_contains($uri, '/login') ||
             str_contains($uri, '/register')
-            || $uri == '/vgames-api/v1/'
+            || $uri == '/vgames-api/v2/'
         ) {
             return $handler->handle($request);
         }
