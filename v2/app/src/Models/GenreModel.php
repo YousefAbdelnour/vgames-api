@@ -21,7 +21,7 @@ class GenreModel extends BaseModel
     {
         $query_args = [];
 
-        $sql = "SELECT * FROM {$this->table_name}";
+        $sql = "SELECT * FROM {$this->table_name} WHERE 1";
         $this->filter($params, $sql, $query_args);
         $this->sort($params, $sql, $this);
         return $this->paginate($sql, $query_args);
@@ -48,9 +48,9 @@ class GenreModel extends BaseModel
         }
 
         //*Description_Name
-        if (isset($params['description'])) {
-            $sql .= ' AND `description` LIKE :description';
-            $query_args['description'] = '%' . $params['description'] . '%';
+        if (isset($params['descript'])) {
+            $sql .= ' AND description LIKE :descript';
+            $query_args['descript'] = '%' . $params['descript'] . '%';
         }
 
         //*popularity score
@@ -81,10 +81,10 @@ class GenreModel extends BaseModel
             $query_args['min_target_age'] = $params['min_target_age'];
             $query_args['max_target_age'] = $params['max_target_age'];
         } else if (isset($params['max_target_age'])) {
-            $sql .= ' AND num_of_languages <= :max_target_age';
+            $sql .= ' AND target_audience <= :max_target_age';
             $query_args['max_target_age'] = $params['max_target_age'];
         } else if (isset($params['min_target_age'])) {
-            $sql .= ' AND num_of_languages >= :min_target_age';
+            $sql .= ' AND target_audience >= :min_target_age';
             $query_args['min_target_age'] = $params['min_target_age'];
         } else if (isset($params['target_audience'])) {
             $sql .= ' AND target_audience = :target_audience';

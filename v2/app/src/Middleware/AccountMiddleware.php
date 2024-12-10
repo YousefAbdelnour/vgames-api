@@ -10,8 +10,7 @@ use Psr\Http\Server\MiddlewareInterface;
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
 use LogicException;
-use Slim\Exception\HttpUnauthorizedException;
-use UnexpectedValueException;
+use App\Exceptions\HttpUnauthorizedException;
 
 class AccountMiddleware implements MiddlewareInterface
 {
@@ -19,10 +18,10 @@ class AccountMiddleware implements MiddlewareInterface
     {
         //if statement to check if the params have login or register
         $uri = $request->getUri()->getPath();
-        // dd($uri);
         if (
             str_contains($uri, '/login') ||
             str_contains($uri, '/register')
+            || $uri == '/vgames-api/v1/'
         ) {
             return $handler->handle($request);
         }
@@ -32,13 +31,21 @@ class AccountMiddleware implements MiddlewareInterface
 
         try {
             $decoded = JWT::decode($jwt, new Key(SECRET_KEY, 'HS256'));
+            // permissions for admin, editor, and user
+            if ($decoded->role == "user") {
+                if ($request->getMethod() != 'GET') {
+                    throw new HttpUnauthorizedException($request);
+                }
+            }
+            if ($decoded->role == "editor") {
+                if ($request->getMethod() != 'GET' && $request->getMethod() != 'PUT') {
+                    throw new HttpUnauthorizedException($request);
+                }
+            }
             $request = $request->withAttribute("jwt", $decoded);
         } catch (LogicException $e) {
-            //TODO: Throw a custom HTTP Specialized exception
             throw new HttpUnauthorizedException($request, $e->getMessage());
-        }
-        //TODO: Show custom exception
-        catch (Exception $e) {
+        } catch (Exception $e) {
             throw new HttpUnauthorizedException($request, $e->getMessage());
         }
         //! DO NOT remove or change the following statements.

@@ -6,12 +6,14 @@ use App\Controllers\AboutController;
 use App\Controllers\AccountController;
 //* Imports for controllers
 use App\Controllers\CountryController;
+use App\Controllers\DamageController;
 use App\Controllers\GameController;
 use App\Controllers\GenreController;
 use App\Controllers\DeveloperController;
 use App\Controllers\DistanceController;
 use App\Controllers\DLCController;
 use App\Controllers\EloController;
+use App\Controllers\EventsController;
 use App\Controllers\PlatformController;
 
 use App\Controllers\ReviewController;
@@ -28,6 +30,7 @@ return static function (Slim\App $app): void {
     // Routes with authentication
     //* ROUTE: GET /
     $app->get('/', [AboutController::class, 'handleAboutWebService']);
+
     //* ROUTE: GET/countries
     $app->get('/countries', [CountryController::class, 'handleGetCountries']);
 
@@ -143,4 +146,10 @@ return static function (Slim\App $app): void {
 
     //! ROUTE: POST/elo
     $app->post('/elo', [EloController::class, 'handleCalculateElo']);
+
+    //! ROUTE: POST/damage
+    $app->post('/damage', callable: [DamageController::class, 'handleCalculateDamage']);
+
+    //* ROUTE: GET /events
+    $app->get('/events', callable: [EventsController::class, 'handleGetEvents']);
 };

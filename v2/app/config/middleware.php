@@ -15,7 +15,7 @@ return function (App $app) {
     $app->addBodyParsingMiddleware();
     $app->addRoutingMiddleware();
     $app->add(LoggerMiddleware::class);
-    // $app->add(AccountMiddleware::class);
+    $app->add(AccountMiddleware::class);
 
     //!NOTE: the error handling middleware MUST be added last.
     $errorMiddleware = $app->addErrorMiddleware(true, true, true);
